@@ -1,18 +1,27 @@
 import crypto from "node:crypto";
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
 const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const CHANNEL_SECRET = process.env.LINE_CHANNEL_SECRET;
 
 async function redisSet(key, value) {
-  const response = await fetch(`${REDIS_URL}/set/${encodeURIComponent(key)}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${REDIS_TOKEN}`,
-      "Content-Type": "text/plain",
-    },
-    body: value,
-  });
+  const response = await fetch(
+    `${REDIS_URL}/set/${encodeURIComponent(key)}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${REDIS_TOKEN}`,
+        "Content-Type": "text/plain",
+      },
+      body: value,
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Redis request failed");
@@ -36,12 +45,14 @@ export default async function handler(req, res) {
     return res.status(401).send("Missing signature");
   }
 
-  let rawBody = "";
-
   try {
+    const chunks = [];
+
     for await (const chunk of req) {
-      rawBody += chunk;
+      chunks.push(Buffer.from(chunk));
     }
+
+    const rawBody = Buffer.concat(chunks);
 
     const expected = crypto
       .createHmac("sha256", CHANNEL_SECRET)
@@ -58,7 +69,7 @@ export default async function handler(req, res) {
       return res.status(401).send("Invalid signature");
     }
 
-    const body = JSON.parse(rawBody);
+    const body = JSON.parse(rawBody.toString("utf8"));
 
     for (const event of body.events || []) {
       if (event.type === "follow" && event.source?.userId) {
