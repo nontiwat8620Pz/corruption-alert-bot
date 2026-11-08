@@ -1,0 +1,147 @@
+const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
+const REDIS_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const LINE_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
+const CRON_SECRET = process.env.CRON_SECRET;
+
+async function redisGet(key) {
+  const response = await fetch(
+    `${REDIS_URL}/get/${encodeURIComponent(key)}`,
+    {
+      headers: { Authorization: `Bearer ${REDIS_TOKEN}` },
+    }
+  );
+
+  if (!response.ok) throw new Error("Redis GET failed");
+
+  const data = await response.json();
+  return data.result;
+}
+
+async function redisSet(key, value) {
+  const response = await fetch(
+    `${REDIS_URL}/set/${encodeURIComponent(key)}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${REDIS_TOKEN}`,
+        "Content-Type": "text/plain",
+      },
+      body: value,
+    }
+  );
+
+  if (!response.ok) throw new Error("Redis SET failed");
+  return response.json();
+}
+
+async function sendLineMessage(userId, message) {
+  const response = await fetch(
+    "https://api.line.me/v2/bot/message/push",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LINE_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: userId,
+        messages: [{ type: "text", text: message }],
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`LINE API error: ${error}`);
+  }
+}
+
+export default async function handler(req, res) {
+  if (req.method !== "GET" && req.method !== "POST") {
+    return res.status(405).send("Method Not Allowed");
+  }
+
+  if (
+    !REDIS_URL ||
+    !REDIS_TOKEN ||
+    !LINE_TOKEN ||
+    !CRON_SECRET
+  ) {
+    return res.status(500).send("Server configuration missing");
+  }
+
+  if (req.headers.authorization !== `Bearer ${CRON_SECRET}`) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  try {
+    const userId = await redisGet("line:userId");
+
+    if (!userId) {
+      return res.status(200).json({
+        message: "Waiting for LINE user to follow the bot",
+      });
+    }
+
+    const accounts = ["Zephyrus", "PORPXE"];
+    const now = Date.now();
+    const alertMinutes = [10, 5, 2];
+    const results = [];
+
+    for (const account of accounts) {
+      const key = `boss:${account}`;
+      const saved = await redisGet(key);
+
+      if (!saved) {
+        results.push(`${account}: timer not configured`);
+        continue;
+      }
+
+      let state = JSON.parse(saved);
+
+      if (!Number.isFinite(state.spawnAt)) {
+        results.push(`${account}: invalid timer`);
+        continue;
+      }
+
+      // Move to the next 8-hour cycle after a spawn.
+      if (now >= state.spawnAt) {
+        const cycles =
+          Math.floor((now - state.spawnAt) / 28800000) + 1;
+
+        state.spawnAt += cycles * 28800000;
+        state.sent = {};
+      }
+
+      if (!state.sent) state.sent = {};
+
+      for (const minutes of alertMinutes) {
+        const alertAt = state.spawnAt - minutes * 60000;
+        const alertKey = String(minutes);
+
+        if (now >= alertAt && now < state.spawnAt && !state.sent[alertKey]) {
+          await sendLineMessage(
+            userId,
+            `⚠️ Corruption Alert\nบัญชี: ${account}\nบอสผุกร่อนจะเกิดในอีก ${minutes} นาที!`
+          );
+
+          state.sent[alertKey] = true;
+
+          await redisSet(key, JSON.stringify(state));
+
+          results.push(`${account}: sent ${minutes}-minute alert`);
+        }
+      }
+
+      await redisSet(key, JSON.stringify(state));
+    }
+
+    return res.status(200).json({
+      success: true,
+      results,
+    });
+  } catch (error) {
+    console.error("Notify error:", error.message);
+    return res.status(500).send("Notification failed");
+  }
+}
