@@ -93,7 +93,7 @@ export default async function handler(req, res) {
 
     // The page sends the current Bangkok wall-clock time for a consistency check.
     // The trusted server clock remains the actual reference timestamp.
-    if (typeof referenceTime !== "string" || !/^\\d{2}:\\d{2}:\\d{2}$/.test(referenceTime)) {
+    if (typeof referenceTime !== "string" || !/^\d{2}:\d{2}:\d{2}$/.test(referenceTime)) {
       return res.status(400).json({ error: "ไม่พบเวลาอ้างอิงประเทศไทย" });
     }
 
@@ -111,9 +111,16 @@ export default async function handler(req, res) {
       hourCycle: "h23",
     }).format(new Date(now));
 
-    if (bangkokNow !== referenceTime) {
+    const toSeconds = (value) => {
+      const [h, m, s] = value.split(":").map(Number);
+      return h * 3600 + m * 60 + s;
+    };
+    const difference = Math.abs(toSeconds(bangkokNow) - toSeconds(referenceTime));
+    const clockDifference = Math.min(difference, 86400 - difference);
+
+    if (clockDifference > 5) {
       return res.status(409).json({
-        error: "เวลาอ้างอิงเปลี่ยนไปแล้ว กรุณาตรวจสอบเวลาและกดบันทึกอีกครั้ง",
+        error: "เวลาอ้างอิงคลาดเคลื่อน กรุณาตรวจสอบนาฬิกาแล้วกดบันทึกอีกครั้ง",
         serverTime: bangkokNow,
       });
     }
