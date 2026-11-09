@@ -47,7 +47,7 @@
       </select>
 
       <label for="countdown">เวลานับถอยหลังในเกม (กรอกตัวเลข 6 หลัก HHMMSS)</label>
-      <input id="countdown" type="text" inputmode="numeric" maxlength="6" placeholder="เช่น 072530" autocomplete="off">
+      <input id="countdown" type="text" inputmode="numeric" maxlength="8" placeholder="เช่น 072530" autocomplete="off">
       <p id="countdownPreview" class="hint">ระบบจะแปลงเวลาให้โดยอัตโนมัติเมื่อกรอกครบ 6 หลัก</p>
 
       <label for="referenceTime">เวลาไทยที่เห็นตอนอ่าน Countdown ในเกม (กรอกตัวเลข 6 หลัก HHMMSS)</label>
@@ -108,9 +108,10 @@
     }
 
     countdownEl.addEventListener("input", () => {
+      countdownEl.value = formatClockDigits(countdownEl.value);
       const seconds = parseCountdown(countdownEl.value);
       if (seconds === null) {
-        countdownPreview.textContent = countdownEl.value.length === 6
+        countdownPreview.textContent = countdownEl.value.replace(/[^0-9]/g, "").length === 6
           ? "รูปแบบเวลาไม่ถูกต้อง กรุณาตรวจสอบชั่วโมง นาที และวินาที"
           : "กรอกตัวเลขให้ครบ 6 หลัก เช่น 010000";
         return;
