@@ -6,24 +6,32 @@
   <meta name="theme-color" content="#101827">
   <title>CORRUPTX 7DS Origin — Live Timer</title>
   <style>
-    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
+    :root { color-scheme: dark; font-family: 'Noto Sans Thai', system-ui, sans-serif; --gold:#e4bd72; --gold-bright:#ffe2a0; --cyan:#8ee8ff; --panel:rgba(9,19,38,.84); --line:rgba(226,190,120,.38); }
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; padding: 24px 14px; background: #101827; color: #f8fafc; }
-    main { width: min(100%, 560px); margin: 0 auto; }
-    header, .timer-card, .notice { border: 1px solid #334155; border-radius: 18px; background: #172235; }
-    header { padding: 22px; text-align: center; }
-    .eyebrow { color: #94a3b8; letter-spacing: .12em; font-size: .75rem; }
-    h1 { font-size: 1.35rem; margin: 8px 0 16px; }
-    #clock { font-size: clamp(2.4rem, 10vw, 3.5rem); font-weight: 750; font-variant-numeric: tabular-nums; }
-    .zone, .muted { color: #94a3b8; }
-    .section-title { margin: 22px 4px 10px; font-size: 1rem; }
-    .timer-card { padding: 18px; margin-bottom: 12px; }
-    .account { color: #94a3b8; font-size: .85rem; letter-spacing: .08em; }
-    .countdown { margin: 8px 0; font-size: clamp(2rem, 8vw, 2.8rem); font-weight: 750; font-variant-numeric: tabular-nums; }
-    .spawn { color: #cbd5e1; font-size: .95rem; }
-    .notice { margin-top: 16px; padding: 14px; color: #cbd5e1; line-height: 1.6; text-align: center; }
-    .status { margin-top: 12px; font-size: .82rem; color: #94a3b8; text-align: center; }
-    .error { color: #fca5a5; }
+    body { position:relative; isolation:isolate; margin:0; min-height:100vh; padding:24px 14px 36px; background:radial-gradient(ellipse at 50% 0%,#1b3150 0%,#0b1427 58%,#070d19 100%); color:#f8fafc; }
+    body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:url('/corruptx-bg.svg') center center / cover no-repeat; opacity:.40; }
+    main { width:min(100%,560px); margin:0 auto; }
+    header,.timer-card,.notice,.panel { border:1px solid var(--line); border-radius:20px; background:linear-gradient(145deg,rgba(16,31,55,.91),var(--panel)); box-shadow:0 14px 36px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,231,180,.09); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+    header { padding:23px 20px; text-align:center; position:relative; overflow:hidden; }
+    header::after { content:""; position:absolute; left:16%; right:16%; bottom:0; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+    .eyebrow { color:var(--gold-bright); letter-spacing:.18em; font:700 .78rem 'Cinzel',serif; text-shadow:0 0 14px rgba(228,189,114,.25); }
+    h1 { margin:9px 0 15px; font-size:1.38rem; font-weight:800; letter-spacing:.02em; text-shadow:0 2px 16px rgba(0,0,0,.6); }
+    #clock { font-size:clamp(2.4rem,10vw,3.5rem); font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:.045em; color:#e6f7ff; text-shadow:0 0 22px rgba(89,204,255,.35); }
+    .zone,.muted,.hint { color:#b6c6dc; }
+    .section-title { margin:23px 4px 12px; font-size:1rem; font-weight:750; color:var(--gold-bright); }
+    .timer-card { padding:18px; margin-bottom:13px; position:relative; overflow:hidden; }
+    .timer-card::before { content:""; position:absolute; top:0; left:18px; right:18px; height:1px; background:linear-gradient(90deg,transparent,rgba(142,232,255,.65),transparent); }
+    .account { color:var(--gold); font:700 .78rem 'Cinzel',serif; letter-spacing:.12em; }
+    .timer-card h2 { margin:5px 0; font-size:1.12rem; }
+    .countdown { margin:8px 0; font-size:clamp(2rem,8vw,2.8rem); font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:.04em; color:var(--cyan); text-shadow:0 0 20px rgba(82,207,255,.32); }
+    .spawn { color:#d3deed; font-size:.9rem; line-height:1.6; }
+    .notice { margin-top:16px; padding:14px; color:#d3deed; line-height:1.65; text-align:center; }
+    .status { margin-top:12px; font-size:.82rem; color:#a8bad1; text-align:center; }
+    .error { color:#fca5a5 !important; }
+    @media(max-width:420px) { body{padding:16px 11px 28px} header{padding:20px 15px} .timer-card{padding:15px} }
+
   </style>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -31,26 +39,26 @@
   <main>
     <header>
       <div class="eyebrow">CORRUPTX 7DS ORIGIN</div>
-      <h1>Live Boss Timer</h1>
+      <h1>⚔️ LIVE BOSS TIMER</h1>
       <div id="clock" aria-live="off">--:--:--</div>
-      <div class="zone">เวลาประเทศไทย (UTC+7)</div>
+      <div class="zone">🕒 เวลาประเทศไทย (UTC+7)</div>
     </header>
 
-    <h2 class="section-title">เวลาบอสครั้งถัดไป</h2>
+    <h2 class="section-title">👑 เวลาบอสผุกร่อนครั้งถัดไป</h2>
     <section class="timer-card" aria-label="Zephyrus timer">
-      <div class="account">ACCOUNT 01</div>
+      <div class="account">✦ ACCOUNT 01</div>
       <h2>Zephyrus</h2>
       <div class="countdown" id="timer-Zephyrus">--:--:--</div>
-      <div class="spawn" id="spawn-Zephyrus">กำลังโหลดเวลาเกิดบอส...</div>
+      <div class="spawn" id="spawn-Zephyrus">📅 กำลังโหลดเวลาเกิดบอส...</div>
     </section>
     <section class="timer-card" aria-label="PORPXE timer">
-      <div class="account">ACCOUNT 02</div>
+      <div class="account">✦ ACCOUNT 02</div>
       <h2>PORPXE</h2>
       <div class="countdown" id="timer-PORPXE">--:--:--</div>
-      <div class="spawn" id="spawn-PORPXE">กำลังโหลดเวลาเกิดบอส...</div>
+      <div class="spawn" id="spawn-PORPXE">📅 กำลังโหลดเวลาเกิดบอส...</div>
     </section>
 
-    <div class="notice" id="message">กำลังตรวจสอบบัญชี LINE...</div>
+    <div class="notice" id="message">✨ กำลังตรวจสอบบัญชี LINE...</div>
     <div class="status" id="updated"></div>
   </main>
 
