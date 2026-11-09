@@ -154,7 +154,7 @@
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "ตรวจสอบไม่สำเร็จ");
-        messageEl.textContent = "ตรวจสอบสำเร็จ: LINE มีสิทธิ์ใช้งานบัญชี " + data.account + " และระบบไม่ได้เปลี่ยนเวลาเกิดบอส";
+        messageEl.textContent = "ตรวจสอบสำเร็จ: คุณได้รับอนุญาตให้ปรับเวลา Offline ของบัญชี " + data.account + " แล้ว (ไม่มีการเปลี่ยนเวลาเกิดบอส)";
         messageEl.className = "success";
       } catch (error) {
         messageEl.textContent = error.message || "ตรวจสอบไม่สำเร็จ";
