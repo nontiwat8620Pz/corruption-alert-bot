@@ -19,6 +19,7 @@
     .panel { margin-top: 16px; padding: 18px; }
     label { display: block; margin: 14px 0 7px; font-weight: 650; }
     select, input { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: #fff; font: inherit; }
+    input:focus { outline: 2px solid #d6a84b; outline-offset: 2px; }
     button { width: 100%; margin-top: 18px; padding: 14px; border: 0; border-radius: 12px; background: #d6a84b; color: #171717; font-size: 1rem; font-weight: 750; }
     button:disabled { opacity: .55; }
     #message { margin-top: 14px; padding: 12px; border-radius: 10px; background: #0f172a; color: #cbd5e1; line-height: 1.5; }
@@ -50,7 +51,7 @@
       <p id="countdownPreview" class="hint">ระบบจะแปลงเวลาให้โดยอัตโนมัติเมื่อกรอกครบ 6 หลัก</p>
 
       <label for="referenceTime">เวลาไทยที่เห็นตอนอ่าน Countdown ในเกม (HH:MM:SS)</label>
-      <input id="referenceTime" type="text" inputmode="numeric" maxlength="8" placeholder="เช่น 16:28:01" autocomplete="off">
+      <input id="referenceTime" type="text" inputmode="text" maxlength="8" placeholder="เช่น 18:18:01" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
 
       <p class="hint">จดเวลาไทยที่เห็นในขณะที่อ่าน Countdown จากเกม แล้วกรอกตรงนี้ ระบบจะใช้เวลาที่คุณอ่านจริง ไม่ใช่เวลาที่กดบันทึกภายหลัง (ต้องอ่านมาไม่เกิน 10 นาที)</p>
       <button id="verify" type="button" disabled>ตรวจสอบสิทธิ์โดยไม่บันทึก</button>
@@ -140,6 +141,12 @@
         messageEl.className = "error";
         return;
       }
+      if (!/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(referenceEl.value)) {
+        messageEl.textContent = "กรุณากรอกเวลาไทยในรูปแบบ HH:MM:SS เช่น 18:18:01";
+        messageEl.className = "error";
+        referenceEl.focus();
+        return;
+      }
 
       verifyButton.disabled = true;
       messageEl.textContent = "กำลังตรวจสอบสิทธิ์ LINE โดยไม่บันทึกเวลา...";
@@ -180,6 +187,12 @@
       if (!seconds || seconds < 1) {
         messageEl.textContent = "กรุณากรอกตัวเลข 6 หลักในรูปแบบ HHMMSS ให้ถูกต้อง";
         messageEl.className = "error";
+        return;
+      }
+      if (!/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(referenceEl.value)) {
+        messageEl.textContent = "กรุณากรอกเวลาไทยในรูปแบบ HH:MM:SS เช่น 18:18:01";
+        messageEl.className = "error";
+        referenceEl.focus();
         return;
       }
 
