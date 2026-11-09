@@ -72,7 +72,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { idToken, account, countdownSeconds, referenceTime } = req.body || {};
+    const { idToken, account, countdownSeconds, referenceTime, validateOnly } = req.body || {};
 
     if (typeof idToken !== "string" || !idToken) {
       return res.status(401).json({ error: "กรุณาเข้าสู่ระบบ LINE" });
@@ -123,6 +123,10 @@ export default async function handler(req, res) {
         error: "เวลาอ้างอิงคลาดเคลื่อน กรุณาตรวจสอบนาฬิกาแล้วกดบันทึกอีกครั้ง",
         serverTime: bangkokNow,
       });
+    }
+
+    if (validateOnly === true) {
+      return res.status(200).json({ success: true, verified: true, account, countdownSeconds: seconds, serverTime: now });
     }
 
     const spawnAt = now + seconds * 1000;
