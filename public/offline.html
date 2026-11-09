@@ -183,7 +183,6 @@
       messageEl.className = "";
 
       try {
-        updateClock();
         const response = await fetch("/api/offline-adjust", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
