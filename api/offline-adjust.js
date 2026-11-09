@@ -114,8 +114,6 @@ export default async function handler(req, res) {
       hourCycle: "h23",
     }).formatToParts(new Date(now));
     const part = (type) => Number(bangkokParts.find((item) => item.type === type)?.value);
-    const [hours, minutes, secs] = referenceTime.split(":").map(Number);
-
     // Convert the entered Bangkok wall-clock time to an epoch timestamp.
     // Pick the closest date (yesterday/today/tomorrow) to handle midnight safely.
     const bangkokDateUtc = Date.UTC(part("year"), part("month") - 1, part("day"));
