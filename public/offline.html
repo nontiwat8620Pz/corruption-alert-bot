@@ -160,7 +160,12 @@
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "ตรวจสอบไม่สำเร็จ");
-        messageEl.textContent = "ตรวจสอบสำเร็จ: คุณได้รับอนุญาตให้ปรับเวลา Offline ของบัญชี " + data.account + " แล้ว (ไม่มีการเปลี่ยนเวลาเกิดบอส)";
+        const calculatedSpawn = data.spawnAt
+          ? new Intl.DateTimeFormat("th-TH", { timeZone: "Asia/Bangkok", dateStyle: "medium", timeStyle: "medium" }).format(new Date(data.spawnAt))
+          : "";
+        messageEl.textContent = "ตรวจสอบสำเร็จ: บัญชี " + data.account +
+          (calculatedSpawn ? " คำนวณเวลาเกิดบอสได้ประมาณ " + calculatedSpawn : "") +
+          " (ไม่มีการเปลี่ยนเวลาเกิดบอส)";
         messageEl.className = "success";
       } catch (error) {
         messageEl.textContent = error.message || "ตรวจสอบไม่สำเร็จ";
