@@ -7,37 +7,150 @@
   <title>CORRUPTX 7DS Origin — Live Timer</title>
   <style>
     :root { color-scheme: dark; font-family: system-ui, sans-serif; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #101827; color: #f8fafc; }
-    main { width: min(92%, 520px); padding: 28px; box-sizing: border-box; border: 1px solid #334155; border-radius: 18px; background: #172235; text-align: center; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; padding: 24px 14px; background: #101827; color: #f8fafc; }
+    main { width: min(100%, 560px); margin: 0 auto; }
+    header, .timer-card, .notice { border: 1px solid #334155; border-radius: 18px; background: #172235; }
+    header { padding: 22px; text-align: center; }
     .eyebrow { color: #94a3b8; letter-spacing: .12em; font-size: .75rem; }
-    h1 { font-size: 1.35rem; margin: 10px 0 24px; }
-    #clock { font-size: clamp(2.4rem, 10vw, 3.6rem); font-weight: 700; font-variant-numeric: tabular-nums; }
-    .zone { color: #94a3b8; margin-top: 4px; }
-    .note { margin-top: 28px; padding: 14px; border-radius: 12px; background: #0f172a; color: #cbd5e1; line-height: 1.6; }
+    h1 { font-size: 1.35rem; margin: 8px 0 16px; }
+    #clock { font-size: clamp(2.4rem, 10vw, 3.5rem); font-weight: 750; font-variant-numeric: tabular-nums; }
+    .zone, .muted { color: #94a3b8; }
+    .section-title { margin: 22px 4px 10px; font-size: 1rem; }
+    .timer-card { padding: 18px; margin-bottom: 12px; }
+    .account { color: #94a3b8; font-size: .85rem; letter-spacing: .08em; }
+    .countdown { margin: 8px 0; font-size: clamp(2rem, 8vw, 2.8rem); font-weight: 750; font-variant-numeric: tabular-nums; }
+    .spawn { color: #cbd5e1; font-size: .95rem; }
+    .notice { margin-top: 16px; padding: 14px; color: #cbd5e1; line-height: 1.6; text-align: center; }
+    .status { margin-top: 12px; font-size: .82rem; color: #94a3b8; text-align: center; }
+    .error { color: #fca5a5; }
   </style>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
   <main>
-    <div class="eyebrow">CORRUPTX 7DS ORIGIN</div>
-    <h1>Live Boss Timer</h1>
-    <div id="clock" aria-live="off">--:--:--</div>
-    <div class="zone">เวลาประเทศไทย (UTC+7)</div>
-    <div class="note">กำลังเตรียมระบบแสดงเวลาบอสของ Zephyrus และ PORPXE</div>
+    <header>
+      <div class="eyebrow">CORRUPTX 7DS ORIGIN</div>
+      <h1>Live Boss Timer</h1>
+      <div id="clock" aria-live="off">--:--:--</div>
+      <div class="zone">เวลาประเทศไทย (UTC+7)</div>
+    </header>
+
+    <h2 class="section-title">เวลาบอสครั้งถัดไป</h2>
+    <section class="timer-card" aria-label="Zephyrus timer">
+      <div class="account">ACCOUNT 01</div>
+      <h2>Zephyrus</h2>
+      <div class="countdown" id="timer-Zephyrus">--:--:--</div>
+      <div class="spawn" id="spawn-Zephyrus">กำลังโหลดเวลาเกิดบอส...</div>
+    </section>
+    <section class="timer-card" aria-label="PORPXE timer">
+      <div class="account">ACCOUNT 02</div>
+      <h2>PORPXE</h2>
+      <div class="countdown" id="timer-PORPXE">--:--:--</div>
+      <div class="spawn" id="spawn-PORPXE">กำลังโหลดเวลาเกิดบอส...</div>
+    </section>
+
+    <div class="notice" id="message">กำลังตรวจสอบบัญชี LINE...</div>
+    <div class="status" id="updated"></div>
   </main>
+
   <script>
+    const LIFF_ID = "2012490657-JcCNWNo5";
     const clock = document.getElementById("clock");
-    const formatter = new Intl.DateTimeFormat("en-GB", {
+    const message = document.getElementById("message");
+    const updated = document.getElementById("updated");
+    const thaiTime = new Intl.DateTimeFormat("th-TH", {
       timeZone: "Asia/Bangkok",
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
       hour12: false
     });
+    const thaiDateTime = new Intl.DateTimeFormat("th-TH", {
+      timeZone: "Asia/Bangkok",
+      dateStyle: "medium",
+      timeStyle: "medium"
+    });
+
+    let timers = {};
     function updateClock() {
-      clock.textContent = formatter.format(new Date());
+      clock.textContent = thaiTime.format(new Date());
     }
+
+    function formatDuration(milliseconds) {
+      const total = Math.max(0, Math.floor(milliseconds / 1000));
+      const hours = Math.floor(total / 3600);
+      const minutes = Math.floor((total % 3600) / 60);
+      const seconds = total % 60;
+      return [hours, minutes, seconds].map(value => String(value).padStart(2, "0")).join(":");
+    }
+
+    function renderTimers() {
+      for (const account of ["Zephyrus", "PORPXE"]) {
+        const timerEl = document.getElementById("timer-" + account);
+        const spawnEl = document.getElementById("spawn-" + account);
+        const timer = timers[account];
+
+        if (!timer || !Number.isFinite(Number(timer.spawnAt))) {
+          timerEl.textContent = "--:--:--";
+          spawnEl.textContent = "ยังไม่มีข้อมูลเวลาเกิดบอส";
+          continue;
+        }
+
+        const remaining = Number(timer.spawnAt) - Date.now();
+        timerEl.textContent = remaining <= 0 ? "กำลังเกิด / รอรอบถัดไป" : formatDuration(remaining);
+        spawnEl.textContent = "เวลาเกิดโดยประมาณ: " + thaiDateTime.format(new Date(Number(timer.spawnAt)));
+      }
+    }
+
+    async function loadTimers(idToken) {
+      const response = await fetch("/api/liff-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken }),
+        cache: "no-store"
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "ไม่สามารถยืนยันบัญชี LINE ได้");
+      }
+
+      timers = data.accounts || {};
+      renderTimers();
+      updated.textContent = "อัปเดตข้อมูลล่าสุด: " + thaiDateTime.format(new Date(data.serverTime || Date.now()));
+      message.textContent = "ยืนยันบัญชี LINE สำเร็จ";
+    }
+
+    async function start() {
+      try {
+        await liff.init({ liffId: LIFF_ID });
+
+        if (!liff.isLoggedIn()) {
+          liff.login({ redirectUri: window.location.href });
+          return;
+        }
+
+        const idToken = liff.getIDToken();
+        if (!idToken) {
+          throw new Error("ไม่พบ ID Token กรุณาปิดแล้วเปิด LIFF ใหม่ และอนุญาตสิทธิ์ openid");
+        }
+
+        await loadTimers(idToken);
+        window.setInterval(renderTimers, 1000);
+        window.setInterval(() => loadTimers(idToken).catch(error => {
+          message.textContent = error.message;
+          message.className = "notice error";
+        }), 30000);
+      } catch (error) {
+        message.textContent = error.message || "เกิดข้อผิดพลาดในการเปิด Live Timer";
+        message.className = "notice error";
+      }
+    }
+
     updateClock();
-    setInterval(updateClock, 250);
+    window.setInterval(updateClock, 250);
+    start();
   </script>
 </body>
 </html>
