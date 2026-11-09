@@ -49,10 +49,10 @@
       <input id="countdown" type="text" inputmode="numeric" maxlength="6" placeholder="เช่น 072530" autocomplete="off">
       <p id="countdownPreview" class="hint">ระบบจะแปลงเวลาให้โดยอัตโนมัติเมื่อกรอกครบ 6 หลัก</p>
 
-      <label for="referenceTime">เวลาไทย ณ ขณะอ่านเวลาในเกม</label>
-      <input id="referenceTime" type="text" readonly>
+      <label for="referenceTime">เวลาไทยที่เห็นตอนอ่าน Countdown ในเกม (HH:MM:SS)</label>
+      <input id="referenceTime" type="text" inputmode="numeric" maxlength="8" placeholder="เช่น 16:28:01" autocomplete="off">
 
-      <p class="hint">ระบบจะจับเวลาไทยจากนาฬิกาเซิร์ฟเวอร์ขณะกดบันทึก เพื่อป้องกันเวลาคลาดเคลื่อน</p>
+      <p class="hint">จดเวลาไทยที่เห็นในขณะที่อ่าน Countdown จากเกม แล้วกรอกตรงนี้ ระบบจะใช้เวลาที่คุณอ่านจริง ไม่ใช่เวลาที่กดบันทึกภายหลัง (ต้องอ่านมาไม่เกิน 10 นาที)</p>
       <button id="verify" type="button" disabled>ตรวจสอบสิทธิ์โดยไม่บันทึก</button>
       <button id="save" type="button" disabled>บันทึกเวลา Offline</button>
       <div id="message" role="status">กำลังตรวจสอบบัญชี LINE...</div>
@@ -69,6 +69,7 @@
     const verifyButton = document.getElementById("verify");
     const messageEl = document.getElementById("message");
     let idToken = null;
+    let referenceManuallySet = false;
 
     const thaiClock = new Intl.DateTimeFormat("en-GB", {
       timeZone: "Asia/Bangkok",
@@ -82,8 +83,12 @@
       const now = new Date();
       const value = thaiClock.format(now);
       clockEl.textContent = value;
-      referenceEl.value = value;
+      if (!referenceManuallySet) referenceEl.value = value;
     }
+
+    referenceEl.addEventListener("input", () => {
+      referenceManuallySet = true;
+    });
 
     function parseCountdown(value) {
       const digits = value.replace(/[^0-9]/g, "");
@@ -141,7 +146,6 @@
       messageEl.className = "";
 
       try {
-        updateClock();
         const response = await fetch("/api/offline-adjust", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
