@@ -94,7 +94,7 @@
 
     // Keep six digits visible, matching the countdown input.
     referenceEl.addEventListener("input", () => {
-      referenceEl.value = referenceEl.value.replace(/[^0-9]/g, "").slice(0, 6);
+      referenceEl.value = formatClockDigits(referenceEl.value);
     });
 
     function parseCountdown(value) {
