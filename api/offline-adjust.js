@@ -103,33 +103,59 @@ export default async function handler(req, res) {
     }
 
     const now = Date.now();
-    const bangkokNow = new Intl.DateTimeFormat("en-GB", {
+    const bangkokParts = new Intl.DateTimeFormat("en-GB", {
       timeZone: "Asia/Bangkok",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
       hourCycle: "h23",
-    }).format(new Date(now));
+    }).formatToParts(new Date(now));
+    const part = (type) => Number(bangkokParts.find((item) => item.type === type)?.value);
+    const [hours, minutes, secs] = referenceTime.split(":").map(Number);
 
-    const toSeconds = (value) => {
-      const [h, m, s] = value.split(":").map(Number);
-      return h * 3600 + m * 60 + s;
-    };
-    const difference = Math.abs(toSeconds(bangkokNow) - toSeconds(referenceTime));
-    const clockDifference = Math.min(difference, 86400 - difference);
+    // Convert the entered Bangkok wall-clock time to an epoch timestamp.
+    // Pick the closest date (yesterday/today/tomorrow) to handle midnight safely.
+    const bangkokDateUtc = Date.UTC(part("year"), part("month") - 1, part("day"));
+    const referenceCandidates = [-1, 0, 1].map((dayOffset) =>
+      Date.UTC(
+        new Date(bangkokDateUtc + dayOffset * 86400000).getUTCFullYear(),
+        new Date(bangkokDateUtc + dayOffset * 86400000).getUTCMonth(),
+        new Date(bangkokDateUtc + dayOffset * 86400000).getUTCDate(),
+        hours - 7,
+        minutes,
+        secs
+      )
+    );
+    const referenceAt = referenceCandidates.reduce((closest, candidate) =>
+      Math.abs(candidate - now) < Math.abs(closest - now) ? candidate : closest
+    );
+    const referenceAgeMs = now - referenceAt;
 
-    if (clockDifference > 5) {
+    // Allow time to switch back from the game and enter the observed clock,
+    // but reject stale/future reference readings beyond ten minutes.
+    if (Math.abs(referenceAgeMs) > 10 * 60 * 1000) {
       return res.status(409).json({
-        error: "เวลาอ้างอิงคลาดเคลื่อน กรุณาตรวจสอบนาฬิกาแล้วกดบันทึกอีกครั้ง",
-        serverTime: bangkokNow,
+        error: "เวลาอ้างอิงเก่าเกิน 10 นาที กรุณาเข้าเกมอ่านเวลาใหม่แล้วลองอีกครั้ง",
+        serverTime: now,
       });
     }
 
-    if (validateOnly === true) {
-      return res.status(200).json({ success: true, verified: true, account, countdownSeconds: seconds, serverTime: now });
-    }
+    const spawnAt = referenceAt + seconds * 1000;
 
-    const spawnAt = now + seconds * 1000;
+    if (validateOnly === true) {
+      return res.status(200).json({
+        success: true,
+        verified: true,
+        account,
+        countdownSeconds: seconds,
+        referenceAt,
+        spawnAt,
+        serverTime: now,
+      });
+    }
     await redisSet(
       `boss:${account}`,
       JSON.stringify({ spawnAt, sent: {} })
