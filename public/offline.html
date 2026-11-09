@@ -70,7 +70,6 @@
     const verifyButton = document.getElementById("verify");
     const messageEl = document.getElementById("message");
     let idToken = null;
-    let referenceManuallySet = false;
 
     const thaiClock = new Intl.DateTimeFormat("en-GB", {
       timeZone: "Asia/Bangkok",
@@ -91,22 +90,10 @@
       const now = new Date();
       const value = thaiClock.format(now);
       clockEl.textContent = value;
-      if (!referenceManuallySet) referenceEl.value = value;
     }
 
-    // Stop the auto-clock from rewriting this field as soon as the user touches it.
-    // This prevents mobile LIFF keyboards/caret from being disrupted by the 250ms clock refresh.
-    referenceEl.addEventListener("pointerdown", () => {
-      referenceManuallySet = true;
-    }, { once: true });
-    referenceEl.addEventListener("touchstart", () => {
-      referenceManuallySet = true;
-    }, { once: true, passive: true });
-    referenceEl.addEventListener("focus", () => {
-      referenceManuallySet = true;
-    }, { once: true });
+    // Accept six digits like the countdown field, then insert colons automatically.
     referenceEl.addEventListener("input", () => {
-      referenceManuallySet = true;
       const formatted = formatClockDigits(referenceEl.value);
       referenceEl.value = formatted;
     });
@@ -246,6 +233,8 @@
       }
     });
 
+    // Set reference time once; do not rewrite the editable field during clock refreshes.
+    referenceEl.value = thaiClock.format(new Date());
     updateClock();
     window.setInterval(updateClock, 250);
     start();
