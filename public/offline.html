@@ -129,7 +129,9 @@
     verifyButton.addEventListener("click", async () => {
       const seconds = parseCountdown(countdownEl.value);
       if (seconds === null || seconds < 1) {
-        messageEl.textContent = "กรุณากรอกตัวเลข 6 หลักให้ถูกต้องก่อนตรวจสอบ";
+        messageEl.textContent = countdownEl.value.replace(/[^0-9]/g, "").length !== 6
+          ? "กรุณากรอกตัวเลข 6 หลักให้ถูกต้องก่อนตรวจสอบ"
+          : "รูปแบบเวลาไม่ถูกต้อง กรุณาตรวจสอบชั่วโมง นาที และวินาที";
         messageEl.className = "error";
         return;
       }
