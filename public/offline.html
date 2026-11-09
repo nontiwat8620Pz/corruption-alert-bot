@@ -53,6 +53,7 @@
       <input id="referenceTime" type="text" readonly>
 
       <p class="hint">ระบบจะจับเวลาไทยจากนาฬิกาเซิร์ฟเวอร์ขณะกดบันทึก เพื่อป้องกันเวลาคลาดเคลื่อน</p>
+      <button id="verify" type="button" disabled>ตรวจสอบสิทธิ์โดยไม่บันทึก</button>
       <button id="save" type="button" disabled>บันทึกเวลา Offline</button>
       <div id="message" role="status">กำลังตรวจสอบบัญชี LINE...</div>
     </section>
@@ -65,6 +66,7 @@
     const countdownEl = document.getElementById("countdown");
     const countdownPreview = document.getElementById("countdownPreview");
     const saveButton = document.getElementById("save");
+    const verifyButton = document.getElementById("verify");
     const messageEl = document.getElementById("message");
     let idToken = null;
 
@@ -116,12 +118,51 @@
         idToken = liff.getIDToken();
         if (!idToken) throw new Error("ไม่พบ ID Token กรุณาเปิดผ่าน LINE และอนุญาตสิทธิ์ openid");
         saveButton.disabled = false;
+        verifyButton.disabled = false;
         messageEl.textContent = "ยืนยันการเข้าสู่ระบบ LINE แล้ว เลือกบัญชีและกรอกเวลาได้";
       } catch (error) {
         messageEl.textContent = error.message || "ไม่สามารถตรวจสอบบัญชี LINE ได้";
         messageEl.className = "error";
       }
     }
+
+    verifyButton.addEventListener("click", async () => {
+      const seconds = parseCountdown(countdownEl.value);
+      if (seconds === null || seconds < 1) {
+        messageEl.textContent = "กรุณากรอกตัวเลข 6 หลักให้ถูกต้องก่อนตรวจสอบ";
+        messageEl.className = "error";
+        return;
+      }
+
+      verifyButton.disabled = true;
+      messageEl.textContent = "กำลังตรวจสอบสิทธิ์ LINE โดยไม่บันทึกเวลา...";
+      messageEl.className = "";
+
+      try {
+        updateClock();
+        const response = await fetch("/api/offline-adjust", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            idToken,
+            account: document.getElementById("account").value,
+            countdownSeconds: seconds,
+            referenceTime: referenceEl.value,
+            validateOnly: true
+          }),
+          cache: "no-store"
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "ตรวจสอบไม่สำเร็จ");
+        messageEl.textContent = "ตรวจสอบสำเร็จ: LINE มีสิทธิ์ใช้งานบัญชี " + data.account + " และระบบไม่ได้เปลี่ยนเวลาเกิดบอส";
+        messageEl.className = "success";
+      } catch (error) {
+        messageEl.textContent = error.message || "ตรวจสอบไม่สำเร็จ";
+        messageEl.className = "error";
+      } finally {
+        verifyButton.disabled = false;
+      }
+    });
 
     saveButton.addEventListener("click", async () => {
       const seconds = parseCountdown(countdownEl.value);
