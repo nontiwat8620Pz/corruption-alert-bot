@@ -87,6 +87,17 @@
       if (!referenceManuallySet) referenceEl.value = value;
     }
 
+    // Stop the auto-clock from rewriting this field as soon as the user touches it.
+    // This prevents mobile LIFF keyboards/caret from being disrupted by the 250ms clock refresh.
+    referenceEl.addEventListener("pointerdown", () => {
+      referenceManuallySet = true;
+    }, { once: true });
+    referenceEl.addEventListener("touchstart", () => {
+      referenceManuallySet = true;
+    }, { once: true, passive: true });
+    referenceEl.addEventListener("focus", () => {
+      referenceManuallySet = true;
+    }, { once: true });
     referenceEl.addEventListener("input", () => {
       referenceManuallySet = true;
     });
