@@ -73,8 +73,18 @@
     });
 
     let timers = {};
+    let serverClockAnchorMs = null;
+    let serverClockAnchorPerf = null;
+
+    function synchronizedNow() {
+      if (serverClockAnchorMs === null || serverClockAnchorPerf === null) {
+        return Date.now();
+      }
+      return serverClockAnchorMs + (performance.now() - serverClockAnchorPerf);
+    }
+
     function updateClock() {
-      clock.textContent = thaiTime.format(new Date());
+      clock.textContent = thaiTime.format(new Date(synchronizedNow()));
     }
 
     function formatDuration(milliseconds) {
@@ -97,13 +107,14 @@
           continue;
         }
 
-        const remaining = Number(timer.spawnAt) - Date.now();
+        const remaining = Number(timer.spawnAt) - synchronizedNow();
         timerEl.textContent = remaining <= 0 ? "กำลังเกิด / รอรอบถัดไป" : formatDuration(remaining);
         spawnEl.textContent = "เวลาเกิดโดยประมาณ: " + thaiDateTime.format(new Date(Number(timer.spawnAt)));
       }
     }
 
     async function loadTimers(idToken) {
+      const requestStartedAt = performance.now();
       const response = await fetch("/api/liff-status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -112,13 +123,23 @@
       });
 
       const data = await response.json();
+      const responseReceivedAt = performance.now();
       if (!response.ok) {
         throw new Error(data.error || "ไม่สามารถยืนยันบัญชี LINE ได้");
       }
 
+      if (Number.isFinite(Number(data.serverTime))) {
+        // Estimate the server/client clock offset at the request midpoint.
+        // Countdown rendering then advances from a monotonic performance clock,
+        // avoiding drift from the device's wall clock.
+        serverClockAnchorMs = Number(data.serverTime);
+        serverClockAnchorPerf = (requestStartedAt + responseReceivedAt) / 2;
+      }
+
       timers = data.accounts || {};
       renderTimers();
-      updated.textContent = "อัปเดตข้อมูลล่าสุด: " + thaiDateTime.format(new Date(data.serverTime || Date.now()));
+      updateClock();
+      updated.textContent = "อัปเดตข้อมูลล่าสุด: " + thaiDateTime.format(new Date(synchronizedNow()));
       message.textContent = "ยืนยันบัญชี LINE สำเร็จ";
     }
 
