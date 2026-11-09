@@ -32,6 +32,27 @@
     .error { color:#fca5a5 !important; }
     @media(max-width:420px) { body{padding:16px 11px 28px} header{padding:20px 15px} .timer-card{padding:15px} }
 
+  
+    /* Ref-inspired hero and premium fantasy HUD */
+    body { padding:16px 12px 34px; background:#091326; }
+    body::before { opacity:.48; background-position:center 38%; }
+    main { width:min(100%,620px); }
+    header { min-height:260px; padding:26px 18px 22px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; border:1px solid rgba(255,218,145,.7); border-radius:24px; background:linear-gradient(180deg,rgba(6,16,34,.08) 0%,rgba(7,17,36,.25) 28%,rgba(5,14,31,.94) 100%),url('/corruptx-bg.svg') center 34%/cover; box-shadow:0 16px 42px rgba(0,0,0,.46),inset 0 0 35px rgba(109,185,255,.12); }
+    header::before { content:"✦  THE SEVEN DEADLY SINS  ✦"; position:absolute; top:20px; left:0; right:0; color:#ffe1a0; font:700 .72rem 'Cinzel',serif; letter-spacing:.16em; text-shadow:0 2px 8px #000; }
+    header::after { left:8%; right:8%; bottom:0; height:2px; }
+    .eyebrow { display:inline-block; padding:7px 18px; border:1px solid rgba(255,219,145,.7); border-radius:999px; background:rgba(8,20,41,.72); color:#ffe3a7; }
+    h1 { width:100%; margin:13px 0 10px; padding:12px 10px; border:1px solid rgba(255,218,145,.85); border-radius:14px; background:linear-gradient(100deg,rgba(7,18,39,.96),rgba(20,43,74,.91),rgba(7,18,39,.96)); color:#ffe2a0; font:800 clamp(1.2rem,5vw,1.65rem) 'Cinzel','Noto Sans Thai',serif; letter-spacing:.04em; text-shadow:0 2px 8px #000,0 0 15px rgba(255,205,112,.28); box-shadow:0 8px 20px rgba(0,0,0,.3); }
+    #clock { line-height:1.05; }
+    .section-title { margin:21px 4px 12px; padding:10px 14px; border-left:4px solid #e6bd70; border-radius:0 12px 12px 0; background:linear-gradient(90deg,rgba(27,48,76,.94),rgba(13,26,48,.45)); color:#ffe0a0; font-size:1.02rem; }
+    .timer-card { display:grid; grid-template-columns:76px minmax(0,1fr); grid-template-rows:auto auto auto auto; column-gap:14px; align-items:center; min-height:174px; padding:17px 17px 17px 14px; border:1px solid rgba(157,209,255,.58); border-radius:22px; background:linear-gradient(110deg,rgba(8,23,48,.91),rgba(20,43,72,.82) 55%,rgba(8,19,39,.93)); box-shadow:0 12px 28px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 28px rgba(75,155,232,.1); }
+    .timer-card::after { content:"♛"; grid-column:1; grid-row:1 / 5; width:68px; height:68px; display:grid; place-items:center; border:2px solid #edc777; border-radius:50%; background:radial-gradient(circle at 35% 25%,#537ca7,#172d4d 68%,#09172b); color:#ffe2a0; font-size:2rem; text-shadow:0 0 15px rgba(255,211,120,.65); box-shadow:0 0 0 4px rgba(228,189,114,.12),0 0 20px rgba(228,189,114,.2); }
+    .account { grid-column:2; grid-row:1; color:#f4d28b; font-size:.72rem; }
+    .timer-card h2 { grid-column:2; grid-row:2; margin:2px 0 0; font-size:1.15rem; color:#fff; }
+    .countdown { grid-column:2; grid-row:3; margin:3px 0; font-size:clamp(2rem,8vw,2.65rem); line-height:1.12; color:#9cecff; text-shadow:0 0 8px rgba(77,210,255,.8),0 0 24px rgba(77,210,255,.45); }
+    .spawn { grid-column:1 / -1; grid-row:4; margin-top:10px; padding-top:9px; border-top:1px solid rgba(226,190,120,.25); font-size:.84rem; }
+    .notice { border-color:rgba(228,189,114,.4); background:rgba(7,18,37,.88); }
+    @media(max-width:420px) { header{min-height:238px;padding:22px 13px 18px} .timer-card{grid-template-columns:60px minmax(0,1fr);column-gap:11px;padding:14px 12px;min-height:160px} .timer-card::after{width:54px;height:54px;font-size:1.65rem} .countdown{font-size:clamp(1.75rem,8vw,2.2rem)} .spawn{font-size:.78rem} }
+
   </style>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -44,7 +65,7 @@
       <div class="zone">🕒 เวลาประเทศไทย (UTC+7)</div>
     </header>
 
-    <h2 class="section-title">👑 เวลาบอสผุกร่อนครั้งถัดไป</h2>
+    <h2 class="section-title">👑 CORRUPTION BOSS — NEXT SPAWN</h2>
     <section class="timer-card" aria-label="Zephyrus timer">
       <div class="account">✦ ACCOUNT 01</div>
       <h2>Zephyrus</h2>
