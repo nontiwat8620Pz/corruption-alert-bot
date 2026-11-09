@@ -92,10 +92,9 @@
       clockEl.textContent = value;
     }
 
-    // Accept six digits like the countdown field, then insert colons automatically.
+    // Keep six digits visible, matching the countdown input.
     referenceEl.addEventListener("input", () => {
-      const formatted = formatClockDigits(referenceEl.value);
-      referenceEl.value = formatted;
+      referenceEl.value = referenceEl.value.replace(/[^0-9]/g, "").slice(0, 6);
     });
 
     function parseCountdown(value) {
@@ -148,8 +147,9 @@
         messageEl.className = "error";
         return;
       }
-      if (!/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(referenceEl.value)) {
-        messageEl.textContent = "กรุณากรอกเวลาไทยในรูปแบบ HH:MM:SS เช่น 18:18:01";
+      const referenceDigits = referenceEl.value.replace(/[^0-9]/g, "");
+      if (!/^(?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]$/.test(referenceDigits)) {
+        messageEl.textContent = "กรุณากรอกเวลาไทยเป็นตัวเลข 6 หลัก เช่น 183401";
         messageEl.className = "error";
         referenceEl.focus();
         return;
@@ -167,7 +167,7 @@
             idToken,
             account: document.getElementById("account").value,
             countdownSeconds: seconds,
-            referenceTime: referenceEl.value,
+            referenceTime: referenceDigits.slice(0, 2) + ":" + referenceDigits.slice(2, 4) + ":" + referenceDigits.slice(4, 6),
             validateOnly: true
           }),
           cache: "no-store"
@@ -196,8 +196,9 @@
         messageEl.className = "error";
         return;
       }
-      if (!/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(referenceEl.value)) {
-        messageEl.textContent = "กรุณากรอกเวลาไทยในรูปแบบ HH:MM:SS เช่น 18:18:01";
+      const referenceDigits = referenceEl.value.replace(/[^0-9]/g, "");
+      if (!/^(?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]$/.test(referenceDigits)) {
+        messageEl.textContent = "กรุณากรอกเวลาไทยเป็นตัวเลข 6 หลัก เช่น 183401";
         messageEl.className = "error";
         referenceEl.focus();
         return;
@@ -215,7 +216,7 @@
             idToken,
             account: document.getElementById("account").value,
             countdownSeconds: seconds,
-            referenceTime: referenceEl.value
+            referenceTime: referenceDigits.slice(0, 2) + ":" + referenceDigits.slice(2, 4) + ":" + referenceDigits.slice(4, 6)
           }),
           cache: "no-store"
         });
