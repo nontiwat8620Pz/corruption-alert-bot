@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>CORRUPTX — Offline Timer</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; padding: 22px 14px; background: #101827; color: #f8fafc; }
+    main { width: min(100%, 540px); margin: 0 auto; }
+    header, .panel { border: 1px solid #334155; border-radius: 18px; background: #172235; }
+    header { padding: 20px; text-align: center; }
+    .eyebrow { color: #94a3b8; letter-spacing: .12em; font-size: .75rem; }
+    h1 { margin: 8px 0; font-size: 1.4rem; }
+    #clock { font-size: 2.3rem; font-weight: 750; font-variant-numeric: tabular-nums; }
+    .muted, .hint { color: #94a3b8; font-size: .9rem; line-height: 1.5; }
+    .panel { margin-top: 16px; padding: 18px; }
+    label { display: block; margin: 14px 0 7px; font-weight: 650; }
+    select, input { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: #fff; font: inherit; }
+    button { width: 100%; margin-top: 18px; padding: 14px; border: 0; border-radius: 12px; background: #d6a84b; color: #171717; font-size: 1rem; font-weight: 750; }
+    button:disabled { opacity: .55; }
+    #message { margin-top: 14px; padding: 12px; border-radius: 10px; background: #0f172a; color: #cbd5e1; line-height: 1.5; }
+    .error { color: #fca5a5 !important; }
+    .success { color: #86efac !important; }
+  </style>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">CORRUPTX 7DS ORIGIN</div>
+      <h1>OFFLINE TIMER ADJUSTMENT</h1>
+      <div id="clock">--:--:--</div>
+      <div class="muted">เวลาประเทศไทย (UTC+7)</div>
+    </header>
+
+    <section class="panel">
+      <p class="hint">หลังเข้าเกมและเคลียร์บอสผุกร่อน 1 ตัว ให้กรอกเวลานับถอยหลังที่เกมแสดง โดยอ้างอิงเวลาไทย ณ ขณะเดียวกัน</p>
+
+      <label for="account">เลือกบัญชี</label>
+      <select id="account">
+        <option value="Zephyrus">Zephyrus</option>
+        <option value="PORPXE">PORPXE</option>
+      </select>
+
+      <label for="countdown">เวลานับถอยหลังในเกม (HH:MM:SS)</label>
+      <input id="countdown" type="text" inputmode="numeric" maxlength="8" placeholder="เช่น 07:25:30" autocomplete="off">
+
+      <label for="referenceTime">เวลาไทย ณ ขณะอ่านเวลาในเกม</label>
+      <input id="referenceTime" type="text" readonly>
+
+      <p class="hint">ระบบจะจับเวลาไทยจากนาฬิกาเซิร์ฟเวอร์ขณะกดบันทึก เพื่อป้องกันเวลาคลาดเคลื่อน</p>
+      <button id="save" type="button" disabled>บันทึกเวลา Offline</button>
+      <div id="message" role="status">กำลังตรวจสอบบัญชี LINE...</div>
+    </section>
+  </main>
+
+  <script>
+    const LIFF_ID = "2012490657-JcCNWNo5";
+    const clockEl = document.getElementById("clock");
+    const referenceEl = document.getElementById("referenceTime");
+    const countdownEl = document.getElementById("countdown");
+    const saveButton = document.getElementById("save");
+    const messageEl = document.getElementById("message");
+    let idToken = null;
+
+    const thaiClock = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Bangkok",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23"
+    });
+
+    function updateClock() {
+      const now = new Date();
+      const value = thaiClock.format(now);
+      clockEl.textContent = value;
+      referenceEl.value = value;
+    }
+
+    function parseCountdown(value) {
+      const match = /^(\\d{1,2}):(\\d{2}):(\\d{2})$/.exec(value.trim());
+      if (!match) return null;
+      const hours = Number(match[1]);
+      const minutes = Number(match[2]);
+      const seconds = Number(match[3]);
+      if (hours > 24 || minutes > 59 || seconds > 59 || (hours === 24 && (minutes || seconds))) return null;
+      return hours * 3600 + minutes * 60 + seconds;
+    }
+
+    async function start() {
+      try {
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) {
+          liff.login({ redirectUri: window.location.href });
+          return;
+        }
+        idToken = liff.getIDToken();
+        if (!idToken) throw new Error("ไม่พบ ID Token กรุณาเปิดผ่าน LINE และอนุญาตสิทธิ์ openid");
+        saveButton.disabled = false;
+        messageEl.textContent = "ยืนยันการเข้าสู่ระบบ LINE แล้ว เลือกบัญชีและกรอกเวลาได้";
+      } catch (error) {
+        messageEl.textContent = error.message || "ไม่สามารถตรวจสอบบัญชี LINE ได้";
+        messageEl.className = "error";
+      }
+    }
+
+    saveButton.addEventListener("click", async () => {
+      const seconds = parseCountdown(countdownEl.value);
+      if (!seconds || seconds < 1) {
+        messageEl.textContent = "กรุณากรอกเวลาในรูปแบบ HH:MM:SS ให้ถูกต้อง";
+        messageEl.className = "error";
+        return;
+      }
+
+      saveButton.disabled = true;
+      messageEl.textContent = "กำลังบันทึกเวลา...";
+      messageEl.className = "";
+
+      try {
+        updateClock();
+        const response = await fetch("/api/offline-adjust", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            idToken,
+            account: document.getElementById("account").value,
+            countdownSeconds: seconds,
+            referenceTime: referenceEl.value
+          }),
+          cache: "no-store"
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "บันทึกไม่สำเร็จ");
+        messageEl.textContent = "บันทึกเวลา " + data.account + " สำเร็จแล้ว เวลาเกิดบอสประมาณ " +
+          new Intl.DateTimeFormat("th-TH", { timeZone: "Asia/Bangkok", dateStyle: "medium", timeStyle: "medium" }).format(new Date(data.spawnAt));
+        messageEl.className = "success";
+        countdownEl.value = "";
+      } catch (error) {
+        messageEl.textContent = error.message;
+        messageEl.className = "error";
+      } finally {
+        saveButton.disabled = false;
+      }
+    });
+
+    updateClock();
+    window.setInterval(updateClock, 250);
+    start();
+  </script>
+</body>
+</html>
