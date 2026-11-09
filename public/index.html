@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>CORRUPTX 7DS Origin — Live Timer</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #101827; color: #f8fafc; }
+    main { width: min(92%, 520px); padding: 28px; box-sizing: border-box; border: 1px solid #334155; border-radius: 18px; background: #172235; text-align: center; }
+    .eyebrow { color: #94a3b8; letter-spacing: .12em; font-size: .75rem; }
+    h1 { font-size: 1.35rem; margin: 10px 0 24px; }
+    #clock { font-size: clamp(2.4rem, 10vw, 3.6rem); font-weight: 700; font-variant-numeric: tabular-nums; }
+    .zone { color: #94a3b8; margin-top: 4px; }
+    .note { margin-top: 28px; padding: 14px; border-radius: 12px; background: #0f172a; color: #cbd5e1; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">CORRUPTX 7DS ORIGIN</div>
+    <h1>Live Boss Timer</h1>
+    <div id="clock" aria-live="off">--:--:--</div>
+    <div class="zone">เวลาประเทศไทย (UTC+7)</div>
+    <div class="note">กำลังเตรียมระบบแสดงเวลาบอสของ Zephyrus และ PORPXE</div>
+  </main>
+  <script>
+    const clock = document.getElementById("clock");
+    const formatter = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Asia/Bangkok",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    });
+    function updateClock() {
+      clock.textContent = formatter.format(new Date());
+    }
+    updateClock();
+    setInterval(updateClock, 250);
+  </script>
+</body>
+</html>
