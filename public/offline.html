@@ -6,25 +6,31 @@
   <meta name="theme-color" content="#101827">
   <title>CORRUPTX — Offline Timer</title>
   <style>
-    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
+    :root { color-scheme: dark; font-family: 'Noto Sans Thai', system-ui, sans-serif; --gold:#e4bd72; --gold-bright:#ffe2a0; --cyan:#8ee8ff; --panel:rgba(9,19,38,.84); --line:rgba(226,190,120,.38); }
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; padding: 22px 14px; background: #101827; color: #f8fafc; }
-    main { width: min(100%, 540px); margin: 0 auto; }
-    header, .panel { border: 1px solid #334155; border-radius: 18px; background: #172235; }
-    header { padding: 20px; text-align: center; }
-    .eyebrow { color: #94a3b8; letter-spacing: .12em; font-size: .75rem; }
-    h1 { margin: 8px 0; font-size: 1.4rem; }
-    #clock { font-size: 2.3rem; font-weight: 750; font-variant-numeric: tabular-nums; }
-    .muted, .hint { color: #94a3b8; font-size: .9rem; line-height: 1.5; }
-    .panel { margin-top: 16px; padding: 18px; }
-    label { display: block; margin: 14px 0 7px; font-weight: 650; }
-    select, input { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: #fff; font: inherit; }
-    input:focus { outline: 2px solid #d6a84b; outline-offset: 2px; }
-    button { width: 100%; margin-top: 18px; padding: 14px; border: 0; border-radius: 12px; background: #d6a84b; color: #171717; font-size: 1rem; font-weight: 750; }
-    button:disabled { opacity: .55; }
-    #message { margin-top: 14px; padding: 12px; border-radius: 10px; background: #0f172a; color: #cbd5e1; line-height: 1.5; }
-    .error { color: #fca5a5 !important; }
-    .success { color: #86efac !important; }
+    body { position:relative; isolation:isolate; margin:0; min-height:100vh; padding:24px 14px 36px; background:radial-gradient(ellipse at 50% 0%,#1b3150 0%,#0b1427 58%,#070d19 100%); color:#f8fafc; }
+    body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:url('/corruptx-bg.svg') center center / cover no-repeat; opacity:.40; }
+    main { width:min(100%,560px); margin:0 auto; }
+    header,.timer-card,.notice,.panel { border:1px solid var(--line); border-radius:20px; background:linear-gradient(145deg,rgba(16,31,55,.91),var(--panel)); box-shadow:0 14px 36px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,231,180,.09); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+    header { padding:23px 20px; text-align:center; position:relative; overflow:hidden; }
+    header::after { content:""; position:absolute; left:16%; right:16%; bottom:0; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+    .eyebrow { color:var(--gold-bright); letter-spacing:.18em; font:700 .78rem 'Cinzel',serif; text-shadow:0 0 14px rgba(228,189,114,.25); }
+    h1 { margin:9px 0 15px; font-size:1.38rem; font-weight:800; letter-spacing:.02em; text-shadow:0 2px 16px rgba(0,0,0,.6); }
+    #clock { font-size:clamp(2.4rem,10vw,3.5rem); font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:.045em; color:#e6f7ff; text-shadow:0 0 22px rgba(89,204,255,.35); }
+    .zone,.muted,.hint { color:#b6c6dc; }
+    .panel { margin-top:16px; padding:18px; }
+    label { display:block; margin:16px 0 7px; font-weight:700; color:#f2d49b; }
+    select,input { width:100%; padding:14px; border-radius:12px; border:1px solid rgba(155,184,220,.38); background:rgba(5,13,28,.88); color:#fff; font:inherit; box-shadow:inset 0 2px 8px rgba(0,0,0,.24); }
+    select:focus,input:focus { outline:2px solid var(--gold); outline-offset:2px; border-color:var(--gold); }
+    button { width:100%; margin-top:16px; padding:14px; border:1px solid rgba(255,225,160,.52); border-radius:13px; background:linear-gradient(135deg,#f4d28b,#b77b32); color:#20170b; font:800 1rem 'Noto Sans Thai',sans-serif; box-shadow:0 7px 18px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.5); cursor:pointer; transition:transform .15s,filter .15s; }
+    button:active { transform:translateY(1px); filter:brightness(1.08); }
+    button:disabled { opacity:.55; cursor:not-allowed; }
+    #verify { background:linear-gradient(135deg,#a5e9ff,#397fb9); border-color:rgba(180,235,255,.6); color:#061a2b; }
+    #message { margin-top:16px; padding:13px; border:1px solid rgba(155,184,220,.2); border-radius:12px; background:rgba(4,12,27,.78); color:#d4e0ef; line-height:1.6; }
+    @media(max-width:420px) { body{padding:16px 11px 28px} header{padding:20px 15px} .panel{padding:15px} }
+
   </style>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
@@ -32,31 +38,31 @@
   <main>
     <header>
       <div class="eyebrow">CORRUPTX 7DS ORIGIN</div>
-      <h1>OFFLINE TIMER ADJUSTMENT</h1>
+      <h1>🛡️ OFFLINE TIMER</h1>
       <div id="clock">--:--:--</div>
-      <div class="muted">เวลาประเทศไทย (UTC+7)</div>
+      <div class="muted">🕒 เวลาประเทศไทย (UTC+7)</div>
     </header>
 
     <section class="panel">
-      <p class="hint">หลังเข้าเกมและเคลียร์บอสผุกร่อน 1 ตัว ให้กรอกเวลานับถอยหลังที่เกมแสดง โดยอ้างอิงเวลาไทย ณ ขณะเดียวกัน</p>
+      <p class="hint">✨ หลังเข้าเกมและเคลียร์บอสผุกร่อน 1 ตัว ให้กรอก Countdown ที่เกมแสดง พร้อมเวลาไทย ณ ขณะเดียวกัน</p>
 
-      <label for="account">เลือกบัญชี</label>
+      <label for="account">👤 เลือกบัญชีเกม</label>
       <select id="account">
         <option value="Zephyrus">Zephyrus</option>
         <option value="PORPXE">PORPXE</option>
       </select>
 
-      <label for="countdown">เวลานับถอยหลังในเกม (กรอกตัวเลข 6 หลัก HHMMSS)</label>
+      <label for="countdown">⏳ Countdown ในเกม (กรอกตัวเลข 6 หลัก HHMMSS)</label>
       <input id="countdown" type="text" inputmode="numeric" maxlength="8" placeholder="เช่น 072530" autocomplete="off">
       <p id="countdownPreview" class="hint">ระบบจะแปลงเวลาให้โดยอัตโนมัติเมื่อกรอกครบ 6 หลัก</p>
 
-      <label for="referenceTime">เวลาไทยที่เห็นตอนอ่าน Countdown ในเกม (กรอกตัวเลข 6 หลัก HHMMSS)</label>
+      <label for="referenceTime">🕒 เวลาไทย ณ ตอนอ่าน Countdown (กรอกตัวเลข 6 หลัก HHMMSS)</label>
       <input id="referenceTime" type="text" inputmode="numeric" maxlength="8" placeholder="เช่น 181801" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
 
       <p class="hint">จดเวลาไทยที่เห็นในขณะที่อ่าน Countdown จากเกม แล้วกรอกตัวเลข 6 หลัก เช่น 181801 ระบบจะแทรกเครื่องหมาย : ให้อัตโนมัติ (ต้องอ่านมาไม่เกิน 10 นาที)</p>
-      <button id="verify" type="button" disabled>ตรวจสอบสิทธิ์โดยไม่บันทึก</button>
-      <button id="save" type="button" disabled>บันทึกเวลา Offline</button>
-      <div id="message" role="status">กำลังตรวจสอบบัญชี LINE...</div>
+      <button id="verify" type="button" disabled>🔎 ตรวจสอบเวลา (Verify) — ไม่บันทึก</button>
+      <button id="save" type="button" disabled>💾 บันทึกเวลา Offline (Save)</button>
+      <div id="message" role="status">✨ กำลังตรวจสอบบัญชี LINE...</div>
     </section>
   </main>
 
