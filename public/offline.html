@@ -47,6 +47,7 @@
 
       <label for="countdown">เวลานับถอยหลังในเกม (กรอกตัวเลข 6 หลัก HHMMSS)</label>
       <input id="countdown" type="text" inputmode="numeric" maxlength="6" placeholder="เช่น 072530" autocomplete="off">
+      <p id="countdownPreview" class="hint">ระบบจะแปลงเวลาให้โดยอัตโนมัติเมื่อกรอกครบ 6 หลัก</p>
 
       <label for="referenceTime">เวลาไทย ณ ขณะอ่านเวลาในเกม</label>
       <input id="referenceTime" type="text" readonly>
@@ -62,6 +63,7 @@
     const clockEl = document.getElementById("clock");
     const referenceEl = document.getElementById("referenceTime");
     const countdownEl = document.getElementById("countdown");
+    const countdownPreview = document.getElementById("countdownPreview");
     const saveButton = document.getElementById("save");
     const messageEl = document.getElementById("message");
     let idToken = null;
@@ -90,6 +92,20 @@
       if (hours > 24 || minutes > 59 || seconds > 59 || (hours === 24 && (minutes || seconds))) return null;
       return hours * 3600 + minutes * 60 + seconds;
     }
+
+    countdownEl.addEventListener("input", () => {
+      const seconds = parseCountdown(countdownEl.value);
+      if (seconds === null) {
+        countdownPreview.textContent = countdownEl.value.length === 6
+          ? "รูปแบบเวลาไม่ถูกต้อง กรุณาตรวจสอบชั่วโมง นาที และวินาที"
+          : "กรอกตัวเลขให้ครบ 6 หลัก เช่น 010000";
+        return;
+      }
+      const hours = String(Math.floor(seconds / 3600)).padStart(2, "0");
+      const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+      const remainingSeconds = String(seconds % 60).padStart(2, "0");
+      countdownPreview.textContent = "ระบบอ่านเวลาเป็น " + hours + ":" + minutes + ":" + remainingSeconds;
+    });
     async function start() {
       try {
         await liff.init({ liffId: LIFF_ID });
