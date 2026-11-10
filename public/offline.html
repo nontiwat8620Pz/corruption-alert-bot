@@ -6,207 +6,63 @@
   <meta name="theme-color" content="#101827">
   <title>CORRUPTX — Offline Timer</title>
   <style>
-
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
-    :root { color-scheme: dark; font-family: 'Noto Sans Thai', system-ui, sans-serif; --gold:#e4bd72; --gold-bright:#ffe2a0; --cyan:#8ee8ff; --panel:rgba(9,19,38,.84); --line:rgba(226,190,120,.38); }
-    * { box-sizing: border-box; }
-    body { position:relative; isolation:isolate; margin:0; min-height:100vh; padding:24px 14px 36px; background:radial-gradient(ellipse at 50% 0%,#1b3150 0%,#0b1427 58%,#070d19 100%); color:#f8fafc; }
-    body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:url('/corruptx-bg.svg') center center / cover no-repeat; opacity:.40; }
-    main { width:min(100%,560px); margin:0 auto; }
-    header,.timer-card,.notice,.panel { border:1px solid var(--line); border-radius:20px; background:linear-gradient(145deg,rgba(16,31,55,.91),var(--panel)); box-shadow:0 14px 36px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,231,180,.09); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
-    header { padding:23px 20px; text-align:center; position:relative; overflow:hidden; }
-    header::after { content:""; position:absolute; left:16%; right:16%; bottom:0; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
-    .eyebrow { color:var(--gold-bright); letter-spacing:.18em; font:700 .78rem 'Cinzel',serif; text-shadow:0 0 14px rgba(228,189,114,.25); }
-    h1 { margin:9px 0 15px; font-size:1.38rem; font-weight:800; letter-spacing:.02em; text-shadow:0 2px 16px rgba(0,0,0,.6); }
-    #clock { font-size:clamp(2.4rem,10vw,3.5rem); font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:.045em; color:#e6f7ff; text-shadow:0 0 22px rgba(89,204,255,.35); }
-    .zone,.muted,.hint { color:#b6c6dc; }
-    .panel { margin-top:16px; padding:18px; }
-    label { display:block; margin:16px 0 7px; font-weight:700; color:#f2d49b; }
-    select,input { width:100%; padding:14px; border-radius:12px; border:1px solid rgba(155,184,220,.38); background:rgba(5,13,28,.88); color:#fff; font:inherit; box-shadow:inset 0 2px 8px rgba(0,0,0,.24); }
-    select:focus,input:focus { outline:2px solid var(--gold); outline-offset:2px; border-color:var(--gold); }
-    button { width:100%; margin-top:16px; padding:14px; border:1px solid rgba(255,225,160,.52); border-radius:13px; background:linear-gradient(135deg,#f4d28b,#b77b32); color:#20170b; font:800 1rem 'Noto Sans Thai',sans-serif; box-shadow:0 7px 18px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.5); cursor:pointer; transition:transform .15s,filter .15s; }
-    button:active { transform:translateY(1px); filter:brightness(1.08); }
-    button:disabled { opacity:.55; cursor:not-allowed; }
-    #verify { background:linear-gradient(135deg,#a5e9ff,#397fb9); border-color:rgba(180,235,255,.6); color:#061a2b; }
-    #message { margin-top:16px; padding:13px; border:1px solid rgba(155,184,220,.2); border-radius:12px; background:rgba(4,12,27,.78); color:#d4e0ef; line-height:1.6; }
-    .error { color:#fca5a5 !important; }
-    .success { color:#a7f3c2 !important; border-color:rgba(74,222,128,.35) !important; }
-    @media(max-width:420px) { body{padding:16px 11px 28px} header{padding:20px 15px} .panel{padding:15px} }
-
-  
-    /* Ref-inspired fantasy adjustment panel */
-    body { padding:16px 12px 34px; background:#091326; }
-    body::before { opacity:.48; background-position:center 38%; }
-    main { width:min(100%,620px); }
-    header { min-height:235px; padding:26px 18px 22px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; border:1px solid rgba(255,218,145,.7); border-radius:24px; background:linear-gradient(180deg,rgba(6,16,34,.08) 0%,rgba(7,17,36,.22) 25%,rgba(5,14,31,.94) 100%),url('/corruptx-bg.svg') center 34%/cover; box-shadow:0 16px 42px rgba(0,0,0,.46),inset 0 0 35px rgba(109,185,255,.12); }
-    header::before { content:"✦  THE SEVEN DEADLY SINS  ✦"; position:absolute; top:20px; left:0; right:0; color:#ffe1a0; font:700 .72rem 'Cinzel',serif; letter-spacing:.16em; text-shadow:0 2px 8px #000; }
-    header::after { left:8%; right:8%; bottom:0; height:2px; }
-    .eyebrow { display:inline-block; padding:7px 18px; border:1px solid rgba(255,219,145,.7); border-radius:999px; background:rgba(8,20,41,.72); color:#ffe3a7; }
-    h1 { width:100%; margin:13px 0 10px; padding:12px 10px; border:1px solid rgba(255,218,145,.85); border-radius:14px; background:linear-gradient(100deg,rgba(7,18,39,.96),rgba(20,43,74,.91),rgba(7,18,39,.96)); color:#ffe2a0; font:800 clamp(1.2rem,5vw,1.65rem) 'Cinzel','Noto Sans Thai',serif; letter-spacing:.04em; text-shadow:0 2px 8px #000,0 0 15px rgba(255,205,112,.28); box-shadow:0 8px 20px rgba(0,0,0,.3); }
-    .panel { margin-top:16px; padding:19px; border:1px solid rgba(255,218,145,.52); border-radius:22px; background:linear-gradient(145deg,rgba(11,27,51,.94),rgba(7,17,35,.91)); box-shadow:0 14px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.1); }
-    .hint { line-height:1.65; }
-    label { margin:18px 0 8px; color:#ffe0a0; font-size:.94rem; }
-    select,input { min-height:54px; border:1px solid rgba(157,209,255,.52); border-radius:13px; background:linear-gradient(135deg,rgba(12,29,54,.98),rgba(5,14,30,.98)); font-size:1.12rem; font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:.04em; }
-    #countdown,#referenceTime { text-align:center; font-size:1.3rem; color:#a5edff; text-shadow:0 0 12px rgba(82,207,255,.2); }
-    #countdownPreview { margin:8px 2px 0; color:#a9d9ee; }
-    button { min-height:56px; border-radius:15px; font-size:1.02rem; letter-spacing:.01em; }
-    #verify { background:linear-gradient(135deg,#9ceaff,#2879c4 75%,#1c4f91); color:#071a2d; border-color:#aeeaff; box-shadow:0 8px 20px rgba(31,126,210,.25),inset 0 1px 0 rgba(255,255,255,.65); }
-    #save { background:linear-gradient(135deg,#ffe6a4,#e6ae4e 58%,#a96c25); color:#281907; border-color:#ffe0a0; box-shadow:0 8px 20px rgba(198,137,48,.22),inset 0 1px 0 rgba(255,255,255,.65); }
-    #message { border:1px solid rgba(226,190,120,.3); border-radius:13px; background:rgba(3,11,25,.82); }
-    @media(max-width:420px) { header{min-height:220px;padding:22px 13px 18px} .panel{padding:15px} }
-
-  
-    /* CORRUPTX approved artwork integration */
-    body { background:linear-gradient(180deg,#dcecff 0%,#172e50 38%,#091326 100%); }
-    body::before {
-      background-image:linear-gradient(180deg,rgba(7,17,36,.34),rgba(7,17,36,.76)),url('/assets/offline-reference.webp');
-      background-position:center top;
-      background-size:cover;
-      opacity:.42;
-    }
-    main { width:min(100%,620px); }
-    header {
-      min-height:280px;
-      justify-content:flex-end;
-      background-image:linear-gradient(180deg,rgba(6,16,34,.02) 0%,rgba(7,17,36,.12) 32%,rgba(5,14,31,.94) 100%),url('/assets/offline-reference.webp');
-      background-size:100% auto;
-      background-position:center 16%;
-      border-color:rgba(255,218,145,.82);
-    }
-    header::before { content:"THE SEVEN DEADLY SINS  •  ORIGIN"; top:14px; font-size:.68rem; }
-    .eyebrow { color:#ffe1a0; text-shadow:0 0 12px rgba(255,211,120,.6); }
-    .panel {
-      background:linear-gradient(145deg,rgba(18,39,68,.91),rgba(7,17,35,.88));
-      border-color:rgba(255,218,145,.68);
-      backdrop-filter:blur(15px);
-    }
-    select,input { background:rgba(5,16,34,.88); }
-    @media(max-width:420px) {
-      header { min-height:250px; background-position:center 14%; }
-    }
-
-  
-    /* FIX: use approved artwork only as a cropped character hero.
-       Never place the full-page reference poster behind the live interface. */
-    body { background:#0b1b32 !important; }
-    body::before {
-      background-image:linear-gradient(rgba(7,17,36,.22),rgba(7,17,36,.62)),url('/corruptx-bg.svg') !important;
-      background-size:cover !important;
-      background-position:center 38% !important;
-      opacity:.58 !important;
-    }
-    header {
-      min-height:205px !important;
-      padding:18px 16px 16px !important;
-      background-image:linear-gradient(180deg,rgba(5,14,29,.02) 0%,rgba(5,14,29,.12) 40%,rgba(5,14,29,.94) 100%),url('/assets/offline-reference.webp') !important;
-      background-size:100% 100%,200% auto !important;
-      background-position:center,right top !important;
-      background-repeat:no-repeat !important;
-    }
-    header::before { content:none !important; display:none !important; }
-    header::after { pointer-events:none; }
-    .eyebrow { margin-top:auto; }
-    h1 { margin:10px 0 8px !important; }
-    #clock { font-size:clamp(2.15rem,9vw,3rem) !important; }
-    .panel { margin-top:14px !important; }
-    @media(max-width:420px) {
-      header { min-height:195px !important; padding:15px 13px 14px !important; }
-      .panel { margin-top:12px !important; }
-    }
-
-  
-    /* CORRUPTX layout rebuild: live form controls over approved character artwork */
-    body { padding:14px 11px 28px !important; background:#091629 !important; }
-    body::before {
-      background-image:linear-gradient(rgba(6,17,36,.56),rgba(6,17,36,.88)),url('/corruptx-bg.svg') !important;
-      background-position:center 40% !important;
-      background-size:cover !important;
-      opacity:1 !important;
-    }
-    main { width:min(100%,620px) !important; }
-    header {
-      min-height:310px !important;
-      padding:170px 14px 18px !important;
-      display:flex !important;
-      flex-direction:column !important;
-      justify-content:flex-end !important;
-      align-items:stretch !important;
-      background-image:
-        linear-gradient(180deg,rgba(5,14,29,.02) 0%,rgba(5,14,29,.02) 38%,rgba(5,14,29,.76) 70%,rgba(5,14,29,.98) 100%),
-        url('/assets/offline-reference.webp') !important;
-      background-size:100% 100%,200% auto !important;
-      background-position:center,right top !important;
-      background-repeat:no-repeat !important;
-    }
-    header::before { content:none !important; display:none !important; }
-    .eyebrow { display:none !important; }
-    h1 { width:100% !important; margin:0 0 12px !important; padding:12px 8px !important; text-align:center !important; }
-    #clock { font-size:clamp(2.45rem,10vw,3.45rem) !important; line-height:1.05 !important; }
-    .muted { text-align:center; font-size:1rem; }
-    .panel {
-      display:grid !important;
-      grid-template-columns:minmax(0,1fr) minmax(0,1.08fr) !important;
-      column-gap:12px !important;
-      align-items:center !important;
-      margin-top:14px !important;
-      padding:17px !important;
-      border-color:rgba(255,218,145,.72) !important;
-      background:linear-gradient(145deg,rgba(18,39,68,.96),rgba(7,17,35,.94)) !important;
-    }
-    .panel > .hint:first-child { grid-column:1 / -1 !important; margin-top:0 !important; }
-    .panel label { grid-column:1 !important; margin:12px 0 6px !important; }
-    .panel select,.panel input { grid-column:2 !important; width:100% !important; min-width:0 !important; }
-    #countdownPreview,.panel > .hint:not(:first-child) { grid-column:1 / -1 !important; }
-    #verify,#save,#message { grid-column:1 / -1 !important; }
-    .battle-art {
-      height:145px;
-      margin:14px 2px 0;
-      border:1px solid rgba(255,218,145,.62);
-      border-radius:20px;
-      background-image:linear-gradient(180deg,rgba(7,17,36,.02),rgba(7,17,36,.38)),url('/assets/offline-reference.webp');
-      background-size:100% 100%,200% auto;
-      background-position:center,right bottom;
-      background-repeat:no-repeat;
-      box-shadow:0 12px 30px rgba(0,0,0,.34);
-    }
-    @media(max-width:420px) {
-      header { min-height:295px !important; padding:158px 12px 16px !important; }
-      .panel { grid-template-columns:minmax(0,1fr) minmax(0,1.08fr) !important; padding:14px !important; column-gap:9px !important; }
-      .panel label { font-size:.86rem !important; line-height:1.4 !important; }
-      .panel select,.panel input { padding:10px 8px !important; min-height:50px !important; font-size:1rem !important; }
-      .battle-art { height:125px; }
-    }
-    @media(max-width:350px) {
-      .panel { grid-template-columns:1fr !important; }
-      .panel label,.panel select,.panel input { grid-column:1 !important; }
-    }
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
+:root{color-scheme:dark;font-family:'Noto Sans Thai',system-ui,sans-serif;--gold:#e4bd72;--gold-bright:#ffe2a0;--cyan:#8ee8ff;--line:rgba(226,190,120,.65)}
+*{box-sizing:border-box}
+body{position:relative;isolation:isolate;margin:0;min-height:100vh;padding:16px 12px 30px;background:#091629;color:#f8fafc}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(rgba(5,14,30,.55),rgba(5,14,30,.84)),url('/corruptx-bg.svg') center/cover no-repeat}
+main{width:min(100%,620px);margin:0 auto}
+.hero-art{width:100%;background-repeat:no-repeat;background-position:center top;background-size:100% auto;border:1px solid var(--line);border-bottom:0;border-radius:23px 23px 0 0;box-shadow:0 14px 34px rgba(0,0,0,.38)}
+.offline-art{aspect-ratio:2.41;background-image:url('/assets/offline-reference.webp')}
+header{position:relative;margin:0;padding:15px 15px 17px;text-align:center;overflow:hidden;border:1px solid var(--line);border-top:1px solid rgba(255,225,160,.5);border-radius:0 0 23px 23px;background:linear-gradient(145deg,rgba(12,29,54,.98),rgba(5,15,32,.98));box-shadow:0 14px 34px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.1)}
+h1{margin:0 0 12px;padding:10px 8px;border:1px solid rgba(255,218,145,.9);border-radius:13px;background:linear-gradient(100deg,#091a34,#18365b 50%,#091a34);color:var(--gold-bright);font:800 clamp(1.15rem,4.8vw,1.55rem) 'Cinzel','Noto Sans Thai',serif;letter-spacing:.035em;text-shadow:0 2px 8px #000;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+#clock{font-size:clamp(2.45rem,10vw,3.35rem);font-weight:800;line-height:1.08;font-variant-numeric:tabular-nums;letter-spacing:.035em;color:#e6f7ff;text-shadow:0 0 18px rgba(89,204,255,.4)}
+.muted{margin-top:5px;color:#c4d3e5;font-size:.98rem;text-align:center}
+.panel{display:grid;grid-template-columns:minmax(0,44%) minmax(0,56%);column-gap:10px;align-items:center;margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(145deg,rgba(18,39,68,.97),rgba(7,17,35,.96));box-shadow:0 14px 34px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1)}
+.panel>p.hint{grid-column:1/-1;margin:0 0 8px;color:#c6d5e7;line-height:1.58}
+.panel label{grid-column:1;margin:11px 0 6px;color:#ffe0a0;font-size:.91rem;font-weight:800;line-height:1.4}
+.panel select,.panel input{grid-column:2;width:100%;min-width:0;min-height:52px;padding:10px 11px;border:1px solid rgba(157,209,255,.55);border-radius:13px;background:rgba(5,14,30,.96);color:#fff;font:700 1.03rem 'Noto Sans Thai',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.025em;box-shadow:inset 0 2px 8px rgba(0,0,0,.25)}
+.panel select:focus,.panel input:focus{outline:2px solid var(--gold);outline-offset:2px}
+#countdown,#referenceTime{text-align:center;color:#a5edff}
+#countdownPreview{grid-column:1/-1;margin:7px 2px 2px;color:#a9d9ee;line-height:1.5}
+button{grid-column:1/-1;width:100%;min-height:57px;margin-top:14px;padding:13px;border:1px solid rgba(255,225,160,.52);border-radius:15px;background:linear-gradient(135deg,#ffe6a4,#e6ae4e 58%,#a96c25);color:#281907;font:800 1rem 'Noto Sans Thai',sans-serif;box-shadow:0 7px 18px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.5);cursor:pointer}
+button:active{transform:translateY(1px);filter:brightness(1.08)}
+button:disabled{opacity:.55;cursor:not-allowed}
+#verify{background:linear-gradient(135deg,#9ceaff,#2879c4 75%,#1c4f91);color:#071a2d;border-color:#aeeaff}
+#save{background:linear-gradient(135deg,#ffe6a4,#e6ae4e 58%,#a96c25);color:#281907;border-color:#ffe0a0}
+#message{grid-column:1/-1;margin-top:14px;padding:12px;border:1px solid rgba(226,190,120,.3);border-radius:13px;background:rgba(3,11,25,.82);color:#d4e0ef;line-height:1.6}
+.error{color:#fca5a5!important}
+.success{color:#a7f3c2!important;border-color:rgba(74,222,128,.35)!important}
+.battle-art{width:100%;aspect-ratio:2.1;margin:14px 0 0;border:1px solid rgba(255,218,145,.65);border-radius:20px;background-image:linear-gradient(180deg,rgba(7,17,36,.02),rgba(7,17,36,.2)),url('/assets/offline-reference.webp');background-size:100% 100%,100% auto;background-position:center,center bottom;background-repeat:no-repeat;box-shadow:0 12px 30px rgba(0,0,0,.34)}
+@media(max-width:420px){body{padding:13px 10px 25px}.panel{padding:13px;column-gap:8px;grid-template-columns:minmax(0,43%) minmax(0,57%)}.panel label{font-size:.84rem}.panel select,.panel input{min-height:49px;padding:9px 7px;font-size:.96rem}.panel>p.hint{font-size:.91rem}button{min-height:54px;font-size:.96rem}.battle-art{aspect-ratio:2.1}}
+@media(max-width:340px){.panel{grid-template-columns:1fr}.panel label,.panel select,.panel input{grid-column:1}.panel label{margin-top:10px}}
 
   </style>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
   <main>
+    <div class="hero-art offline-art" role="img" aria-label="The Seven Deadly Sins Origin, Elizabeth and Hawk"></div>
     <header>
-      <div class="eyebrow">CORRUPTX 7DS ORIGIN</div>
       <h1>⏳ OFFLINE TIMER</h1>
       <div id="clock">--:--:--</div>
       <div class="muted">🕒 เวลาประเทศไทย (UTC+7)</div>
     </header>
 
     <section class="panel">
-      <p class="hint">✨ หลังเข้าเกมและเคลียร์บอสผุกร่อน 1 ตัว ให้กรอก Countdown ที่เกมแสดง พร้อมเวลาไทย ณ ขณะเดียวกัน</p>
+      <p class="hint">✨ หลังเคลียร์บอสผุกร่อน ให้กรอก Countdown ในเกมและเวลาไทยที่อ่าน ณ ขณะเดียวกัน โดยกรอกตัวเลข 6 หลัก (HHMMSS)</p>
 
-      <label for="account">👤 เลือกบัญชีเกม</label>
+      <label for="account">👤 บัญชีเกม</label>
       <select id="account">
         <option value="Zephyrus">Zephyrus</option>
         <option value="PORPXE">PORPXE</option>
       </select>
 
-      <label for="countdown">⏳ Countdown ในเกม (กรอกตัวเลข 6 หลัก HHMMSS)</label>
+      <label for="countdown">⏳ Countdown (HHMMSS)</label>
       <input id="countdown" type="text" inputmode="numeric" maxlength="8" placeholder="เช่น 072530" autocomplete="off">
       <p id="countdownPreview" class="hint">ระบบจะแปลงเวลาให้โดยอัตโนมัติเมื่อกรอกครบ 6 หลัก</p>
 
-      <label for="referenceTime">🕒 เวลาไทย ณ ตอนอ่าน Countdown (กรอกตัวเลข 6 หลัก HHMMSS)</label>
+      <label for="referenceTime">🕒 เวลาไทย ณ ตอนอ่าน</label>
       <input id="referenceTime" type="text" inputmode="numeric" maxlength="8" placeholder="เช่น 181801" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done">
 
       <p class="hint">จดเวลาไทยที่เห็นในขณะที่อ่าน Countdown จากเกม แล้วกรอกตัวเลข 6 หลัก เช่น 181801 ระบบจะแทรกเครื่องหมาย : ให้อัตโนมัติ (ต้องอ่านมาไม่เกิน 10 นาที)</p>
