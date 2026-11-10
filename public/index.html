@@ -6,189 +6,40 @@
   <meta name="theme-color" content="#101827">
   <title>CORRUPTX 7DS Origin — Live Timer</title>
   <style>
-
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
-    :root { color-scheme: dark; font-family: 'Noto Sans Thai', system-ui, sans-serif; --gold:#e4bd72; --gold-bright:#ffe2a0; --cyan:#8ee8ff; --panel:rgba(9,19,38,.84); --line:rgba(226,190,120,.38); }
-    * { box-sizing: border-box; }
-    body { position:relative; isolation:isolate; margin:0; min-height:100vh; padding:24px 14px 36px; background:radial-gradient(ellipse at 50% 0%,#1b3150 0%,#0b1427 58%,#070d19 100%); color:#f8fafc; }
-    body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:url('/corruptx-bg.svg') center center / cover no-repeat; opacity:.40; }
-    main { width:min(100%,560px); margin:0 auto; }
-    header,.timer-card,.notice,.panel { border:1px solid var(--line); border-radius:20px; background:linear-gradient(145deg,rgba(16,31,55,.91),var(--panel)); box-shadow:0 14px 36px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,231,180,.09); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
-    header { padding:23px 20px; text-align:center; position:relative; overflow:hidden; }
-    header::after { content:""; position:absolute; left:16%; right:16%; bottom:0; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
-    .eyebrow { color:var(--gold-bright); letter-spacing:.18em; font:700 .78rem 'Cinzel',serif; text-shadow:0 0 14px rgba(228,189,114,.25); }
-    h1 { margin:9px 0 15px; font-size:1.38rem; font-weight:800; letter-spacing:.02em; text-shadow:0 2px 16px rgba(0,0,0,.6); }
-    #clock { font-size:clamp(2.4rem,10vw,3.5rem); font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:.045em; color:#e6f7ff; text-shadow:0 0 22px rgba(89,204,255,.35); }
-    .zone,.muted,.hint { color:#b6c6dc; }
-    .section-title { margin:23px 4px 12px; font-size:1rem; font-weight:750; color:var(--gold-bright); }
-    .timer-card { padding:18px; margin-bottom:13px; position:relative; overflow:hidden; }
-    .timer-card::before { content:""; position:absolute; top:0; left:18px; right:18px; height:1px; background:linear-gradient(90deg,transparent,rgba(142,232,255,.65),transparent); }
-    .account { color:var(--gold); font:700 .78rem 'Cinzel',serif; letter-spacing:.12em; }
-    .timer-card h2 { margin:5px 0; font-size:1.12rem; }
-    .countdown { margin:8px 0; font-size:clamp(2rem,8vw,2.8rem); font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:.04em; color:var(--cyan); text-shadow:0 0 20px rgba(82,207,255,.32); }
-    .spawn { color:#d3deed; font-size:.9rem; line-height:1.6; }
-    .notice { margin-top:16px; padding:14px; color:#d3deed; line-height:1.65; text-align:center; }
-    .status { margin-top:12px; font-size:.82rem; color:#a8bad1; text-align:center; }
-    .error { color:#fca5a5 !important; }
-    @media(max-width:420px) { body{padding:16px 11px 28px} header{padding:20px 15px} .timer-card{padding:15px} }
-
-  
-    /* Ref-inspired hero and premium fantasy HUD */
-    body { padding:16px 12px 34px; background:#091326; }
-    body::before { opacity:.48; background-position:center 38%; }
-    main { width:min(100%,620px); }
-    header { min-height:260px; padding:26px 18px 22px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; border:1px solid rgba(255,218,145,.7); border-radius:24px; background:linear-gradient(180deg,rgba(6,16,34,.08) 0%,rgba(7,17,36,.25) 28%,rgba(5,14,31,.94) 100%),url('/corruptx-bg.svg') center 34%/cover; box-shadow:0 16px 42px rgba(0,0,0,.46),inset 0 0 35px rgba(109,185,255,.12); }
-    header::before { content:"✦  THE SEVEN DEADLY SINS  ✦"; position:absolute; top:20px; left:0; right:0; color:#ffe1a0; font:700 .72rem 'Cinzel',serif; letter-spacing:.16em; text-shadow:0 2px 8px #000; }
-    header::after { left:8%; right:8%; bottom:0; height:2px; }
-    .eyebrow { display:inline-block; padding:7px 18px; border:1px solid rgba(255,219,145,.7); border-radius:999px; background:rgba(8,20,41,.72); color:#ffe3a7; }
-    h1 { width:100%; margin:13px 0 10px; padding:12px 10px; border:1px solid rgba(255,218,145,.85); border-radius:14px; background:linear-gradient(100deg,rgba(7,18,39,.96),rgba(20,43,74,.91),rgba(7,18,39,.96)); color:#ffe2a0; font:800 clamp(1.2rem,5vw,1.65rem) 'Cinzel','Noto Sans Thai',serif; letter-spacing:.04em; text-shadow:0 2px 8px #000,0 0 15px rgba(255,205,112,.28); box-shadow:0 8px 20px rgba(0,0,0,.3); }
-    #clock { line-height:1.05; }
-    .section-title { margin:21px 4px 12px; padding:10px 14px; border-left:4px solid #e6bd70; border-radius:0 12px 12px 0; background:linear-gradient(90deg,rgba(27,48,76,.94),rgba(13,26,48,.45)); color:#ffe0a0; font-size:1.02rem; }
-    .timer-card { display:grid; grid-template-columns:76px minmax(0,1fr); grid-template-rows:auto auto auto auto; column-gap:14px; align-items:center; min-height:174px; padding:17px 17px 17px 14px; border:1px solid rgba(157,209,255,.58); border-radius:22px; background:linear-gradient(110deg,rgba(8,23,48,.91),rgba(20,43,72,.82) 55%,rgba(8,19,39,.93)); box-shadow:0 12px 28px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 28px rgba(75,155,232,.1); }
-    .timer-card::after { content:"♛"; grid-column:1; grid-row:1 / 5; width:68px; height:68px; display:grid; place-items:center; border:2px solid #edc777; border-radius:50%; background:radial-gradient(circle at 35% 25%,#537ca7,#172d4d 68%,#09172b); color:#ffe2a0; font-size:2rem; text-shadow:0 0 15px rgba(255,211,120,.65); box-shadow:0 0 0 4px rgba(228,189,114,.12),0 0 20px rgba(228,189,114,.2); }
-    .account { grid-column:2; grid-row:1; color:#f4d28b; font-size:.72rem; }
-    .timer-card h2 { grid-column:2; grid-row:2; margin:2px 0 0; font-size:1.15rem; color:#fff; }
-    .countdown { grid-column:2; grid-row:3; margin:3px 0; font-size:clamp(2rem,8vw,2.65rem); line-height:1.12; color:#9cecff; text-shadow:0 0 8px rgba(77,210,255,.8),0 0 24px rgba(77,210,255,.45); }
-    .spawn { grid-column:1 / -1; grid-row:4; margin-top:10px; padding-top:9px; border-top:1px solid rgba(226,190,120,.25); font-size:.84rem; }
-    .notice { border-color:rgba(228,189,114,.4); background:rgba(7,18,37,.88); }
-    @media(max-width:420px) { header{min-height:238px;padding:22px 13px 18px} .timer-card{grid-template-columns:60px minmax(0,1fr);column-gap:11px;padding:14px 12px;min-height:160px} .timer-card::after{width:54px;height:54px;font-size:1.65rem} .countdown{font-size:clamp(1.75rem,8vw,2.2rem)} .spawn{font-size:.78rem} }
-
-  
-    /* CORRUPTX approved artwork integration */
-    body { background:linear-gradient(180deg,#dcecff 0%,#152b4b 38%,#091326 100%); }
-    body::before {
-      background-image:linear-gradient(180deg,rgba(7,17,36,.36),rgba(7,17,36,.74)),url('/assets/checkboss-reference.webp');
-      background-position:center top;
-      background-size:cover;
-      opacity:.42;
-    }
-    main { width:min(100%,620px); }
-    header {
-      min-height:290px;
-      justify-content:flex-end;
-      background-image:linear-gradient(180deg,rgba(6,16,34,.04) 0%,rgba(7,17,36,.12) 34%,rgba(5,14,31,.94) 100%),url('/assets/checkboss-reference.webp');
-      background-size:100% auto;
-      background-position:center 17%;
-      border-color:rgba(255,218,145,.82);
-    }
-    header::before { content:"THE SEVEN DEADLY SINS  •  ORIGIN"; top:14px; font-size:.68rem; }
-    .eyebrow { color:#ffe1a0; text-shadow:0 0 12px rgba(255,211,120,.6); }
-    h1 { border-radius:14px; }
-    .timer-card {
-      background:linear-gradient(110deg,rgba(8,23,48,.94),rgba(20,43,72,.88) 55%,rgba(8,19,39,.95));
-      border-color:rgba(255,218,145,.64);
-      backdrop-filter:blur(14px);
-    }
-    .notice { background:rgba(8,20,41,.9); border-color:rgba(255,218,145,.62); }
-    @media(max-width:420px) {
-      header { min-height:260px; background-position:center 15%; }
-    }
-
-  
-    /* FIX: use approved artwork only as a cropped character hero.
-       Never place the full-page reference poster behind the live interface. */
-    body { background:#0b1b32 !important; }
-    body::before {
-      background-image:linear-gradient(rgba(7,17,36,.22),rgba(7,17,36,.62)),url('/corruptx-bg.svg') !important;
-      background-size:cover !important;
-      background-position:center 38% !important;
-      opacity:.58 !important;
-    }
-    header {
-      min-height:218px !important;
-      padding:18px 16px 16px !important;
-      background-image:linear-gradient(180deg,rgba(5,14,29,.02) 0%,rgba(5,14,29,.12) 40%,rgba(5,14,29,.94) 100%),url('/assets/checkboss-reference.webp') !important;
-      background-size:100% 100%,200% auto !important;
-      background-position:center,right top !important;
-      background-repeat:no-repeat !important;
-    }
-    header::before { content:none !important; display:none !important; }
-    header::after { pointer-events:none; }
-    .eyebrow { margin-top:auto; }
-    h1 { margin:10px 0 8px !important; }
-    #clock { font-size:clamp(2.15rem,9vw,3rem) !important; }
-    @media(max-width:420px) {
-      header { min-height:205px !important; padding:15px 13px 14px !important; }
-    }
-
-  
-    /* CORRUPTX layout rebuild: live HTML UI over cropped approved artwork */
-    body { padding:14px 11px 30px !important; background:#091629 !important; }
-    body::before {
-      background-image:linear-gradient(rgba(6,17,36,.56),rgba(6,17,36,.88)),url('/corruptx-bg.svg') !important;
-      background-position:center 40% !important;
-      background-size:cover !important;
-      opacity:1 !important;
-    }
-    main { width:min(100%,620px) !important; }
-    header {
-      min-height:330px !important;
-      padding:176px 14px 18px !important;
-      display:flex !important;
-      flex-direction:column !important;
-      justify-content:flex-end !important;
-      align-items:stretch !important;
-      background-image:
-        linear-gradient(180deg,rgba(5,14,29,.02) 0%,rgba(5,14,29,.02) 38%,rgba(5,14,29,.76) 70%,rgba(5,14,29,.98) 100%),
-        url('/assets/checkboss-reference.webp') !important;
-      background-size:100% 100%,200% auto !important;
-      background-position:center,left top !important;
-      background-repeat:no-repeat !important;
-      overflow:hidden !important;
-    }
-    header::before { content:none !important; display:none !important; }
-    .eyebrow { display:none !important; }
-    h1 { width:100% !important; margin:0 0 12px !important; padding:12px 8px !important; text-align:center !important; }
-    #clock { font-size:clamp(2.45rem,10vw,3.45rem) !important; line-height:1.05 !important; }
-    .zone { text-align:center; font-size:1rem; }
-    .section-title { margin:20px 4px 12px !important; }
-    .timer-card {
-      display:grid !important;
-      grid-template-columns:82px minmax(0,1fr) !important;
-      grid-template-rows:auto auto auto auto !important;
-      column-gap:14px !important;
-      align-items:center !important;
-      min-height:170px !important;
-      padding:16px 16px 15px 13px !important;
-      border-color:rgba(255,218,145,.72) !important;
-      background:linear-gradient(110deg,rgba(8,23,48,.96),rgba(20,43,72,.91) 55%,rgba(8,19,39,.96)) !important;
-    }
-    .timer-card::after { content:none !important; display:none !important; }
-    .portrait {
-      grid-column:1 !important;
-      grid-row:1 / 4 !important;
-      width:78px !important;
-      height:78px !important;
-      border:3px solid #edc777 !important;
-      border-radius:50% !important;
-      background-image:url('/assets/checkboss-reference.webp') !important;
-      background-repeat:no-repeat !important;
-      background-size:800% auto !important;
-      box-shadow:0 0 0 4px rgba(228,189,114,.16),0 0 20px rgba(228,189,114,.25) !important;
-    }
-    .portrait-zephyrus { background-position:0% 43% !important; }
-    .portrait-porpxe { background-position:0% 66% !important; }
-    .account { grid-column:2 !important; grid-row:1 !important; }
-    .timer-card h2 { grid-column:2 !important; grid-row:2 !important; }
-    .countdown { grid-column:2 !important; grid-row:3 !important; }
-    .spawn { grid-column:1 / -1 !important; grid-row:4 !important; }
-    .notice { margin-top:16px !important; }
-    @media(max-width:420px) {
-      header { min-height:310px !important; padding:162px 12px 16px !important; }
-      .timer-card { grid-template-columns:68px minmax(0,1fr) !important; column-gap:11px !important; min-height:158px !important; }
-      .portrait { width:64px !important; height:64px !important; }
-      .countdown { font-size:clamp(1.85rem,8vw,2.35rem) !important; }
-      .spawn { font-size:.78rem !important; }
-    }
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
+:root{color-scheme:dark;font-family:'Noto Sans Thai',system-ui,sans-serif;--gold:#e4bd72;--gold-bright:#ffe2a0;--cyan:#8ee8ff;--panel:rgba(9,22,43,.94);--line:rgba(226,190,120,.65)}
+*{box-sizing:border-box}
+body{position:relative;isolation:isolate;margin:0;min-height:100vh;padding:16px 12px 32px;background:#091629;color:#f8fafc}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(rgba(5,14,30,.55),rgba(5,14,30,.82)),url('/corruptx-bg.svg') center/cover no-repeat;opacity:1}
+main{width:min(100%,620px);margin:0 auto}
+.hero-art{width:100%;background-repeat:no-repeat;background-position:center top;background-size:100% auto;border:1px solid var(--line);border-bottom:0;border-radius:23px 23px 0 0;box-shadow:0 14px 34px rgba(0,0,0,.38)}
+.checkboss-art{aspect-ratio:1.81;background-image:url('/assets/checkboss-reference.webp')}
+header{position:relative;margin:0;padding:15px 15px 17px;text-align:center;overflow:hidden;border:1px solid var(--line);border-top:1px solid rgba(255,225,160,.5);border-radius:0 0 23px 23px;background:linear-gradient(145deg,rgba(12,29,54,.98),rgba(5,15,32,.98));box-shadow:0 14px 34px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.1)}
+h1{margin:0 0 12px;padding:10px 8px;border:1px solid rgba(255,218,145,.9);border-radius:13px;background:linear-gradient(100deg,#091a34,#18365b 50%,#091a34);color:var(--gold-bright);font:800 clamp(1.15rem,4.8vw,1.55rem 'Cinzel','Noto Sans Thai',serif);letter-spacing:.035em;text-shadow:0 2px 8px #000;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+#clock{font-size:clamp(2.45rem,10vw,3.35rem);font-weight:800;line-height:1.08;font-variant-numeric:tabular-nums;letter-spacing:.035em;color:#e6f7ff;text-shadow:0 0 18px rgba(89,204,255,.4)}
+.zone{margin-top:5px;color:#c4d3e5;font-size:.98rem}
+.section-title{margin:19px 4px 12px;padding:10px 13px;border-left:4px solid #e6bd70;border-radius:0 12px 12px 0;background:linear-gradient(90deg,rgba(27,48,76,.96),rgba(13,26,48,.55));color:#ffe0a0;font-size:1rem;font-weight:800}
+.timer-card{position:relative;display:grid;grid-template-columns:78px minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:13px;align-items:center;min-height:155px;margin-bottom:13px;padding:15px 15px 14px 12px;overflow:hidden;border:1px solid var(--line);border-radius:21px;background:linear-gradient(110deg,rgba(8,23,48,.97),rgba(20,43,72,.94) 55%,rgba(8,19,39,.97));box-shadow:0 12px 28px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.1)}
+.portrait{grid-column:1;grid-row:1/4;width:76px;height:76px;border:3px solid #edc777;border-radius:50%;background-image:url('/assets/checkboss-reference.webp');background-repeat:no-repeat;background-size:360% auto;box-shadow:0 0 0 4px rgba(228,189,114,.16),0 0 18px rgba(228,189,114,.22)}
+.portrait-zephyrus{background-position:5% 50%}
+.portrait-porpxe{background-position:5% 75%}
+.account{grid-column:2;grid-row:1;color:#f4d28b;font:700 .75rem 'Cinzel',serif;letter-spacing:.11em}
+.timer-card h2{grid-column:2;grid-row:2;margin:2px 0 0;font-size:1.16rem;color:#fff}
+.countdown{grid-column:2;grid-row:3;margin:3px 0;font-size:clamp(1.9rem,8vw,2.65rem);font-weight:800;line-height:1.12;font-variant-numeric:tabular-nums;letter-spacing:.035em;color:#9cecff;text-shadow:0 0 8px rgba(77,210,255,.7),0 0 22px rgba(77,210,255,.4)}
+.spawn{grid-column:1/-1;grid-row:4;margin-top:9px;padding-top:8px;border-top:1px solid rgba(226,190,120,.28);color:#d3deed;font-size:.84rem;line-height:1.55}
+.notice{margin-top:15px;padding:13px;border:1px solid rgba(228,189,114,.48);border-radius:17px;background:rgba(7,18,37,.92);color:#d3deed;line-height:1.65;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,.25)}
+.status{margin-top:11px;font-size:.82rem;color:#a8bad1;text-align:center}
+.error{color:#fca5a5!important}
+@media(max-width:420px){body{padding:13px 10px 25px}.timer-card{grid-template-columns:68px minmax(0,1fr);column-gap:10px;min-height:146px;padding:13px 11px}.portrait{width:66px;height:66px}.countdown{font-size:clamp(1.8rem,8vw,2.25rem)}.spawn{font-size:.78rem}.section-title{font-size:.93rem}}
 
   </style>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
   <main>
+    <div class="hero-art checkboss-art" role="img" aria-label="The Seven Deadly Sins Origin and Meliodas"></div>
     <header>
-      <div class="eyebrow">CORRUPTX 7DS ORIGIN</div>
-      <h1>⚔️ CHECK BOSS</h1>
+      <h1>👑 CHECK BOSS</h1>
       <div id="clock" aria-live="off">--:--:--</div>
       <div class="zone">🕒 เวลาประเทศไทย (UTC+7)</div>
     </header>
