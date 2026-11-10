@@ -7,21 +7,21 @@
   <title>CORRUPTX — Offline Timer</title>
   <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
-:root{color-scheme:dark;font-family:'Noto Sans Thai',system-ui,sans-serif;--gold:#e4bd72;--gold-bright:#ffe2a0;--cyan:#8ee8ff;--line:rgba(226,190,120,.65)}
+:root{color-scheme:dark;font-family:'Noto Sans Thai',system-ui,sans-serif;--gold:#e4bd72;--gold-bright:#ffe2a0;--cyan:#8ee8ff;--line:rgba(226,190,120,.72)}
 *{box-sizing:border-box}
 body{position:relative;isolation:isolate;margin:0;min-height:100vh;padding:16px 12px 30px;background:#091629;color:#f8fafc}
-body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(rgba(5,14,30,.55),rgba(5,14,30,.84)),url('/corruptx-bg.svg') center/cover no-repeat}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(5,14,30,.46),rgba(5,14,30,.68)),url('/assets/offline-reference.webp');background-position:center top;background-size:cover;background-repeat:no-repeat;filter:blur(8px);transform:scale(1.045);opacity:.82}
 main{width:min(100%,620px);margin:0 auto}
 .hero-art{width:100%;background-repeat:no-repeat;background-position:center top;background-size:100% auto;border:1px solid var(--line);border-bottom:0;border-radius:23px 23px 0 0;box-shadow:0 14px 34px rgba(0,0,0,.38)}
 .offline-art{aspect-ratio:2.41;background-image:url('/assets/offline-reference.webp')}
-header{position:relative;margin:0;padding:15px 15px 17px;text-align:center;overflow:hidden;border:1px solid var(--line);border-top:1px solid rgba(255,225,160,.5);border-radius:0 0 23px 23px;background:linear-gradient(145deg,rgba(12,29,54,.98),rgba(5,15,32,.98));box-shadow:0 14px 34px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.1)}
+header{position:relative;margin:0;padding:15px 15px 17px;text-align:center;overflow:hidden;border:1px solid var(--line);border-top:1px solid rgba(255,225,160,.5);border-radius:0 0 23px 23px;background:linear-gradient(135deg,rgba(12,31,58,.66),rgba(5,17,37,.58));backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);box-shadow:0 14px 34px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.16)}
 h1{margin:0 0 12px;padding:10px 8px;border:1px solid rgba(255,218,145,.9);border-radius:13px;background:linear-gradient(100deg,#091a34,#18365b 50%,#091a34);color:var(--gold-bright);font:800 clamp(1.15rem,4.8vw,1.55rem) 'Cinzel','Noto Sans Thai',serif;letter-spacing:.035em;text-shadow:0 2px 8px #000;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 #clock{font-size:clamp(2.45rem,10vw,3.35rem);font-weight:800;line-height:1.08;font-variant-numeric:tabular-nums;letter-spacing:.035em;color:#e6f7ff;text-shadow:0 0 18px rgba(89,204,255,.4)}
 .muted{margin-top:5px;color:#c4d3e5;font-size:.98rem;text-align:center}
-.panel{display:grid;grid-template-columns:minmax(0,44%) minmax(0,56%);column-gap:10px;align-items:center;margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(145deg,rgba(18,39,68,.97),rgba(7,17,35,.96));box-shadow:0 14px 34px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.1)}
+.panel{display:grid;grid-template-columns:minmax(0,44%) minmax(0,56%);column-gap:10px;align-items:center;margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:21px;background:linear-gradient(145deg,rgba(18,39,68,.66),rgba(7,17,35,.58));backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);box-shadow:0 14px 34px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 24px rgba(135,196,255,.06)}
 .panel>p.hint{grid-column:1/-1;margin:0 0 8px;color:#c6d5e7;line-height:1.58}
 .panel label{grid-column:1;margin:11px 0 6px;color:#ffe0a0;font-size:.91rem;font-weight:800;line-height:1.4}
-.panel select,.panel input{grid-column:2;width:100%;min-width:0;min-height:52px;padding:10px 11px;border:1px solid rgba(157,209,255,.55);border-radius:13px;background:rgba(5,14,30,.96);color:#fff;font:700 1.03rem 'Noto Sans Thai',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.025em;box-shadow:inset 0 2px 8px rgba(0,0,0,.25)}
+.panel select,.panel input{grid-column:2;width:100%;min-width:0;min-height:52px;padding:10px 11px;border:1px solid rgba(157,209,255,.55);border-radius:13px;background:rgba(5,14,30,.82);color:#fff;font:700 1.03rem 'Noto Sans Thai',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.025em;box-shadow:inset 0 2px 8px rgba(0,0,0,.25)}
 .panel select:focus,.panel input:focus{outline:2px solid var(--gold);outline-offset:2px}
 #countdown,#referenceTime{text-align:center;color:#a5edff}
 #countdownPreview{grid-column:1/-1;margin:7px 2px 2px;color:#a9d9ee;line-height:1.5}
@@ -30,7 +30,7 @@ button:active{transform:translateY(1px);filter:brightness(1.08)}
 button:disabled{opacity:.55;cursor:not-allowed}
 #verify{background:linear-gradient(135deg,#9ceaff,#2879c4 75%,#1c4f91);color:#071a2d;border-color:#aeeaff}
 #save{background:linear-gradient(135deg,#ffe6a4,#e6ae4e 58%,#a96c25);color:#281907;border-color:#ffe0a0}
-#message{grid-column:1/-1;margin-top:14px;padding:12px;border:1px solid rgba(226,190,120,.3);border-radius:13px;background:rgba(3,11,25,.82);color:#d4e0ef;line-height:1.6}
+#message{grid-column:1/-1;margin-top:14px;padding:12px;border:1px solid rgba(226,190,120,.3);border-radius:13px;background:rgba(3,11,25,.58);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);color:#d4e0ef;line-height:1.6}
 .error{color:#fca5a5!important}
 .success{color:#a7f3c2!important;border-color:rgba(74,222,128,.35)!important}
 .battle-art{width:100%;aspect-ratio:2.1;margin:14px 0 0;border:1px solid rgba(255,218,145,.65);border-radius:20px;background-image:linear-gradient(180deg,rgba(7,17,36,.02),rgba(7,17,36,.2)),url('/assets/offline-reference.webp');background-size:100% 100%,100% auto;background-position:center,center bottom;background-repeat:no-repeat;box-shadow:0 12px 30px rgba(0,0,0,.34)}
