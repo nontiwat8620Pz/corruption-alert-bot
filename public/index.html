@@ -7,19 +7,19 @@
   <title>CORRUPTX 7DS Origin — Live Timer</title>
   <style>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
-:root{color-scheme:dark;font-family:'Noto Sans Thai',system-ui,sans-serif;--gold:#e4bd72;--gold-bright:#ffe2a0;--cyan:#8ee8ff;--panel:rgba(9,22,43,.94);--line:rgba(226,190,120,.65)}
+:root{color-scheme:dark;font-family:'Noto Sans Thai',system-ui,sans-serif;--gold:#e4bd72;--gold-bright:#ffe2a0;--cyan:#8ee8ff;--panel:rgba(9,22,43,.62);--line:rgba(226,190,120,.72)}
 *{box-sizing:border-box}
 body{position:relative;isolation:isolate;margin:0;min-height:100vh;padding:16px 12px 32px;background:#091629;color:#f8fafc}
-body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(rgba(5,14,30,.55),rgba(5,14,30,.82)),url('/corruptx-bg.svg') center/cover no-repeat;opacity:1}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(5,14,30,.48),rgba(5,14,30,.66)),url('/assets/checkboss-reference.webp');background-position:center top;background-size:cover;background-repeat:no-repeat;filter:blur(8px);transform:scale(1.045);opacity:.82}
 main{width:min(100%,620px);margin:0 auto}
 .hero-art{width:100%;background-repeat:no-repeat;background-position:center top;background-size:100% auto;border:1px solid var(--line);border-bottom:0;border-radius:23px 23px 0 0;box-shadow:0 14px 34px rgba(0,0,0,.38)}
 .checkboss-art{aspect-ratio:1.81;background-image:url('/assets/checkboss-reference.webp')}
-header{position:relative;margin:0;padding:15px 15px 17px;text-align:center;overflow:hidden;border:1px solid var(--line);border-top:1px solid rgba(255,225,160,.5);border-radius:0 0 23px 23px;background:linear-gradient(145deg,rgba(12,29,54,.98),rgba(5,15,32,.98));box-shadow:0 14px 34px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.1)}
+header{position:relative;margin:0;padding:15px 15px 17px;text-align:center;overflow:hidden;border:1px solid var(--line);border-top:1px solid rgba(255,225,160,.5);border-radius:0 0 23px 23px;background:linear-gradient(135deg,rgba(12,31,58,.66),rgba(5,17,37,.58));backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);box-shadow:0 14px 34px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.16)}
 h1{margin:0 0 12px;padding:10px 8px;border:1px solid rgba(255,218,145,.9);border-radius:13px;background:linear-gradient(100deg,#091a34,#18365b 50%,#091a34);color:var(--gold-bright);font:800 clamp(1.15rem,4.8vw,1.55rem)/1.2 'Cinzel','Noto Sans Thai',serif;letter-spacing:.035em;text-shadow:0 2px 8px #000;box-shadow:0 6px 16px rgba(0,0,0,.3)}
 #clock{font-size:clamp(2.45rem,10vw,3.35rem);font-weight:800;line-height:1.08;font-variant-numeric:tabular-nums;letter-spacing:.035em;color:#e6f7ff;text-shadow:0 0 18px rgba(89,204,255,.4)}
 .zone{margin-top:5px;color:#c4d3e5;font-size:.98rem}
-.section-title{margin:19px 4px 12px;padding:10px 13px;border-left:4px solid #e6bd70;border-radius:0 12px 12px 0;background:linear-gradient(90deg,rgba(27,48,76,.96),rgba(13,26,48,.55));color:#ffe0a0;font-size:1rem;font-weight:800}
-.timer-card{position:relative;display:grid;grid-template-columns:78px minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:13px;align-items:center;min-height:155px;margin-bottom:13px;padding:15px 15px 14px 12px;overflow:hidden;border:1px solid var(--line);border-radius:21px;background:linear-gradient(110deg,rgba(8,23,48,.97),rgba(20,43,72,.94) 55%,rgba(8,19,39,.97));box-shadow:0 12px 28px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.1)}
+.section-title{margin:19px 4px 12px;padding:10px 13px;border-left:4px solid #e6bd70;border-radius:0 12px 12px 0;background:linear-gradient(90deg,rgba(27,48,76,.64),rgba(13,26,48,.38));backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);color:#ffe0a0;font-size:1rem;font-weight:800}
+.timer-card{position:relative;display:grid;grid-template-columns:78px minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:13px;align-items:center;min-height:155px;margin-bottom:13px;padding:15px 15px 14px 12px;overflow:hidden;border:1px solid var(--line);border-radius:21px;background:linear-gradient(110deg,rgba(8,23,48,.66),rgba(20,43,72,.56) 55%,rgba(8,19,39,.68));backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);box-shadow:0 12px 28px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 22px rgba(135,196,255,.06)}
 .portrait{grid-column:1;grid-row:1/4;width:76px;height:76px;border:3px solid #edc777;border-radius:50%;background-image:url('/assets/checkboss-reference.webp');background-repeat:no-repeat;background-size:360% auto;box-shadow:0 0 0 4px rgba(228,189,114,.16),0 0 18px rgba(228,189,114,.22)}
 .portrait-zephyrus{background-position:5% 50%}
 .portrait-porpxe{background-position:5% 75%}
@@ -27,7 +27,7 @@ h1{margin:0 0 12px;padding:10px 8px;border:1px solid rgba(255,218,145,.9);border
 .timer-card h2{grid-column:2;grid-row:2;margin:2px 0 0;font-size:1.16rem;color:#fff}
 .countdown{grid-column:2;grid-row:3;margin:3px 0;font-size:clamp(1.9rem,8vw,2.65rem);font-weight:800;line-height:1.12;font-variant-numeric:tabular-nums;letter-spacing:.035em;color:#9cecff;text-shadow:0 0 8px rgba(77,210,255,.7),0 0 22px rgba(77,210,255,.4)}
 .spawn{grid-column:1/-1;grid-row:4;margin-top:9px;padding-top:8px;border-top:1px solid rgba(226,190,120,.28);color:#d3deed;font-size:.84rem;line-height:1.55}
-.notice{margin-top:15px;padding:13px;border:1px solid rgba(228,189,114,.48);border-radius:17px;background:rgba(7,18,37,.92);color:#d3deed;line-height:1.65;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,.25)}
+.notice{margin-top:15px;padding:13px;border:1px solid rgba(228,189,114,.48);border-radius:17px;background:rgba(7,18,37,.58);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);color:#d3deed;line-height:1.65;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,.25)}
 .status{margin-top:11px;font-size:.82rem;color:#a8bad1;text-align:center}
 .error{color:#fca5a5!important}
 @media(max-width:420px){body{padding:13px 10px 25px}.timer-card{grid-template-columns:68px minmax(0,1fr);column-gap:10px;min-height:146px;padding:13px 11px}.portrait{width:66px;height:66px}.countdown{font-size:clamp(1.8rem,8vw,2.25rem)}.spawn{font-size:.78rem}.section-title{font-size:.93rem}}
