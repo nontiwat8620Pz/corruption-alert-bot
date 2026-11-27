@@ -32,17 +32,39 @@ h1{margin:0 0 12px;padding:10px 8px;border:1px solid rgba(255,218,145,.92);borde
 .error{color:#fca5a5!important}
 @media(max-width:420px){body{padding:13px 10px 25px}.timer-card{grid-template-columns:68px minmax(0,1fr);column-gap:10px;min-height:146px;padding:13px 11px}.portrait{width:66px;height:66px}.countdown{font-size:clamp(2.05rem,9.2vw,2.55rem)}.spawn{font-size:.78rem}.section-title{font-size:.93rem}header{margin-top:-36px;padding:13px 10px 15px}.checkboss-art{aspect-ratio:2.05}}
 
+  
+/* CORRUPTX layered fantasy redesign */
+body::before{background:linear-gradient(180deg,rgba(5,15,33,.42),rgba(4,12,27,.72)),url('/assets/checkboss-background.webp') center/cover no-repeat;opacity:1}
+.hero-art{position:relative;isolation:isolate;aspect-ratio:1.36;background-size:cover;background-position:center;border:1px solid rgba(255,218,145,.82);border-radius:26px;box-shadow:0 16px 38px rgba(0,0,0,.34);overflow:hidden}
+.checkboss-art{background-image:linear-gradient(180deg,rgba(4,15,34,.04),rgba(4,15,34,.2)),url('/assets/checkboss-background.webp')}
+.hero-character{position:absolute;z-index:1;right:-4%;bottom:-5%;height:91%;width:94%;object-fit:contain;object-position:right bottom;pointer-events:none;filter:drop-shadow(0 8px 16px rgba(0,0,0,.3))}
+.magic-overlay{position:absolute;z-index:2;inset:0;width:100%;height:100%;object-fit:cover;opacity:.42;pointer-events:none}
+.hero-content{position:absolute;z-index:3;inset:18px 18px 16px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center}
+.brand-mark{padding:7px 19px;border:1px solid rgba(255,220,150,.78);border-radius:30px;background:rgba(5,18,40,.54);backdrop-filter:blur(5px);color:#ffe5aa;font:700 clamp(.82rem,3vw,1.05rem) 'Cinzel',serif;letter-spacing:.15em;text-shadow:0 2px 7px #000}
+.hero-content h1{width:100%;margin:0;padding:12px 8px;border:1px solid rgba(255,218,145,.9);border-radius:18px;background:rgba(5,18,40,.70);backdrop-filter:blur(5px);color:var(--gold-bright);font:800 clamp(1.18rem,5vw,1.7rem)/1.2 'Cinzel','Noto Sans Thai',serif;letter-spacing:.035em;text-shadow:0 2px 8px #000}
+#clock{font-size:clamp(3.25rem,14vw,5rem);font-weight:800;line-height:1.02;font-variant-numeric:tabular-nums;letter-spacing:.035em;color:#effaff;text-shadow:0 0 20px rgba(89,204,255,.55),0 3px 10px rgba(0,0,0,.7)}
+.zone{margin:0;padding:4px 12px;border-radius:20px;background:rgba(5,18,40,.40);backdrop-filter:blur(3px);color:#e4edf8;font-size:clamp(.88rem,3.6vw,1rem)}
+header{display:none}
+.section-title{margin-top:19px;background:rgba(13,26,48,.34);backdrop-filter:blur(5px)}
+.timer-card{background:linear-gradient(110deg,rgba(24,54,88,.34),rgba(31,67,103,.25) 55%,rgba(9,28,54,.36));backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.notice{background:rgba(13,34,61,.30);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+@media(max-width:420px){.hero-art{aspect-ratio:1.24}.hero-content{inset:15px 13px 14px}.hero-character{height:86%;width:100%;right:-7%}.magic-overlay{opacity:.36}#clock{font-size:clamp(3.1rem,14.5vw,4.2rem)}}
+
   </style>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
   <main>
-    <div class="hero-art checkboss-art" role="img" aria-label="The Seven Deadly Sins Origin and Meliodas"></div>
-    <header>
-      <h1>👑 CHECK BOSS</h1>
-      <div id="clock" aria-live="off">--:--:--</div>
-      <div class="zone">🕒 เวลาประเทศไทย (UTC+7)</div>
-    </header>
+    <section class="hero-art checkboss-art" aria-label="CORRUPTX CHECK BOSS">
+      <img class="hero-character" src="/assets/checkboss-meliodas-3d.png" alt="" fetchpriority="high">
+      <img class="magic-overlay" src="/assets/checkboss-magic-effects.png" alt="" aria-hidden="true">
+      <div class="hero-content">
+        <div class="brand-mark">CORRUPTX 7DS ORIGIN</div>
+        <h1>⚔ CHECK BOSS</h1>
+        <div id="clock" aria-live="off">--:--:--</div>
+        <div class="zone">🕒 เวลาประเทศไทย (UTC+7)</div>
+      </div>
+    </section>
 
     <h2 class="section-title">👑 CORRUPTION BOSS — NEXT SPAWN</h2>
     <section class="timer-card" aria-label="Zephyrus timer">
