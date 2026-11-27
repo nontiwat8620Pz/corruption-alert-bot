@@ -50,6 +50,13 @@ header{display:none}
 .notice{background:rgba(13,34,61,.30);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
 @media(max-width:420px){.hero-art{aspect-ratio:1.24}.hero-content{inset:15px 13px 14px}.hero-character{height:86%;width:100%;right:-7%}.magic-overlay{opacity:.36}#clock{font-size:clamp(3.1rem,14.5vw,4.2rem)}}
 
+  
+/* Ensure the old poster composite is not used behind the live HTML UI */
+.checkboss-art{background-image:linear-gradient(180deg,rgba(4,15,34,.04),rgba(4,15,34,.2)),url('/assets/checkboss-background.webp')}
+.portrait{position:relative;display:grid;place-items:center;background-image:radial-gradient(circle at 35% 28%,rgba(126,174,219,.48),rgba(15,39,70,.92) 68%);background-size:cover;background-position:center}
+.portrait::before{content:'♛';color:#ffe2a0;font:700 2.35rem Georgia,serif;text-shadow:0 0 12px rgba(255,214,128,.55)}
+.portrait-zephyrus,.portrait-porpxe{background-position:center}
+
   </style>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
