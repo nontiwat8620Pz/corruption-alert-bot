@@ -37,17 +37,43 @@ button:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:420px){body{padding:13px 10px 25px}.panel{padding:13px;column-gap:8px;grid-template-columns:minmax(0,40%) minmax(0,60%)}.panel label{font-size:.84rem}.panel select,.panel input{min-height:49px;padding:9px 7px;font-size:.96rem}.panel>p.hint{font-size:.91rem}button{min-height:54px;font-size:.96rem}.battle-art{aspect-ratio:2.1}header{margin-top:-30px;padding:13px 10px 15px}.offline-art{aspect-ratio:2.72}}
 @media(max-width:340px){.panel{grid-template-columns:1fr}.panel label,.panel select,.panel input{grid-column:1}.panel label{margin-top:10px}}
 
+  
+/* CORRUPTX layered battlefield redesign */
+body::before{background:linear-gradient(180deg,rgba(4,13,31,.55),rgba(4,12,28,.74)),url('/assets/offline-battlefield.webp') center/cover no-repeat;opacity:1}
+.hero-art{position:relative;isolation:isolate;aspect-ratio:1.36;background-size:cover;background-position:center;border:1px solid rgba(255,218,145,.82);border-radius:26px;box-shadow:0 16px 38px rgba(0,0,0,.34);overflow:hidden}
+.offline-art{background-image:linear-gradient(180deg,rgba(4,15,34,.08),rgba(4,15,34,.32)),url('/assets/offline-battlefield.webp')}
+.offline-heroes,.offline-commandments,.offline-magic{position:absolute;pointer-events:none}
+.offline-heroes{z-index:1;left:-12%;bottom:-8%;width:78%;height:70%;object-fit:contain;object-position:left bottom;filter:drop-shadow(0 8px 12px rgba(0,0,0,.32))}
+.offline-commandments{z-index:1;right:-12%;bottom:-8%;width:78%;height:70%;object-fit:contain;object-position:right bottom;filter:drop-shadow(0 8px 12px rgba(0,0,0,.32))}
+.offline-magic{z-index:2;inset:0;width:100%;height:100%;object-fit:cover;opacity:.24}
+.hero-content{position:absolute;z-index:3;inset:18px 18px 16px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center}
+.brand-mark{padding:7px 19px;border:1px solid rgba(255,220,150,.78);border-radius:30px;background:rgba(5,18,40,.58);backdrop-filter:blur(5px);color:#ffe5aa;font:700 clamp(.82rem,3vw,1.05rem) 'Cinzel',serif;letter-spacing:.15em;text-shadow:0 2px 7px #000}
+.hero-content h1{width:100%;margin:0;padding:12px 8px;border:1px solid rgba(255,218,145,.9);border-radius:18px;background:rgba(5,18,40,.72);backdrop-filter:blur(5px);color:var(--gold-bright);font:800 clamp(1.18rem,5vw,1.7rem)/1.2 'Cinzel','Noto Sans Thai',serif;letter-spacing:.035em;text-shadow:0 2px 8px #000}
+#clock{font-size:clamp(3.25rem,14vw,5rem);font-weight:800;line-height:1.02;font-variant-numeric:tabular-nums;letter-spacing:.035em;color:#effaff;text-shadow:0 0 20px rgba(89,204,255,.55),0 3px 10px rgba(0,0,0,.7)}
+.muted{margin:0;padding:4px 12px;border-radius:20px;background:rgba(5,18,40,.45);backdrop-filter:blur(3px);color:#e4edf8;font-size:clamp(.88rem,3.6vw,1rem)}
+header{display:none}
+.panel{background:linear-gradient(145deg,rgba(32,68,105,.30),rgba(10,29,55,.27));backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);box-shadow:0 12px 28px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.18)}
+.panel select,.panel input{background:rgba(5,14,30,.48);backdrop-filter:blur(3px)}
+#message{background:rgba(3,11,25,.30);backdrop-filter:blur(5px)}
+.battle-art{aspect-ratio:2.1;background-image:linear-gradient(180deg,rgba(7,17,36,.05),rgba(7,17,36,.3)),url('/assets/offline-battlefield.webp');background-size:100% 100%,cover;background-position:center}
+@media(max-width:420px){.hero-art{aspect-ratio:1.24}.hero-content{inset:15px 13px 14px}.offline-heroes{left:-22%;width:88%;height:64%}.offline-commandments{right:-22%;width:88%;height:64%}.offline-magic{opacity:.2}#clock{font-size:clamp(3.1rem,14.5vw,4.2rem)}}
+
   </style>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
   <main>
-    <div class="hero-art offline-art" role="img" aria-label="The Seven Deadly Sins Origin, Elizabeth and Hawk"></div>
-    <header>
-      <h1>⏳ OFFLINE TIMER</h1>
-      <div id="clock">--:--:--</div>
-      <div class="muted">🕒 เวลาประเทศไทย (UTC+7)</div>
-    </header>
+    <section class="hero-art offline-art" aria-label="CORRUPTX OFFLINE TIMER battlefield">
+      <img class="offline-heroes" src="/assets/offline-seven-deadly-sins.png" alt="" fetchpriority="high">
+      <img class="offline-commandments" src="/assets/offline-ten-commandments.png" alt="" fetchpriority="high">
+      <img class="offline-magic" src="/assets/offline-magic-effects.png" alt="" aria-hidden="true">
+      <div class="hero-content">
+        <div class="brand-mark">CORRUPTX 7DS ORIGIN</div>
+        <h1>⏳ OFFLINE TIMER</h1>
+        <div id="clock">--:--:--</div>
+        <div class="muted">🕒 เวลาประเทศไทย (UTC+7)</div>
+      </div>
+    </section>
 
     <section class="panel">
       <p class="hint">✨ หลังเคลียร์บอสผุกร่อน ให้กรอก Countdown ในเกมและเวลาไทยที่อ่าน ณ ขณะเดียวกัน โดยกรอกตัวเลข 6 หลัก (HHMMSS)</p>
